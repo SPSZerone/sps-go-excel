@@ -1,0 +1,61 @@
+= SPS Excel in Go
+William Chen <https://github.com/SPSZerone[@SPSZerone]>
+2024-08-25 CST +08:00
+ifndef::env-github[]
+include::HEADER.adoc[]
+endif::[]
+ifdef::env-github[]
+// settings
+:toc:
+:toclevels: 5
+:idprefix:
+:idseparator: -
+:source-language: go
+// github
+ifndef::env-github[:icons: font]
+ifdef::env-github[]
+:status:
+:caution-caption: :fire:
+:important-caption: :exclamation:
+:note-caption: :paperclip:
+:tip-caption: :bulb:
+:warning-caption: :warning:
+endif::[]
+// URLs: SPSZerone
+:url-github-SPSZerone: https://github.com/SPSZerone
+:url-github-SPSZerone-sps-go-excel: {url-github-SPSZerone}/sps-go-excel
+// URLs: License
+:url-license-gpl-v3: https://www.gnu.org/licenses/gpl-3.0
+// URLs: Language
+:url-language-go: https://go.dev
+// Images: GitHub Badges - static - SPSZerone - go
+:image-url-github-badge-static-SPSZerone-sps-go-excel: https://img.shields.io/badge/SPS Excel-00ADD8?style=flat-square&logo=go&logoColor=white
+// Images: GitHub Badges - static - license
+:image-url-github-badge-static-license-gpl-v3: https://img.shields.io/badge/License-GPLv3-blue.svg?style=flat-square
+// Images: GitHub Badges - static - language
+:image-url-github-badge-static-language-go: https://img.shields.io/badge/Go-00ADD8.svg?logo=go&logoColor=white&style=flat-square
+// VARIABLES: SPSZerone - go
+:var-SPSZerone-image-sps-go-excel: image:{image-url-github-badge-static-SPSZerone-sps-go-excel}[SPS Excel in Go, link={url-github-SPSZerone-sps-go-excel}]
+// VARIABLES: language
+:var-language-image-go: image:{image-url-github-badge-static-language-go}[Go, link={url-language-go}]
+:var-language-image-go-with-footnote: {var-language-image-go}footnote:[{url-language-go}]
+endif::[]
+
+
+++++
+<p align="center">
+    <a href="https://github.com/SPSZerone/sps-go-excel"><img src="https://img.shields.io/badge/SPS Excel-00ADD8?style=flat-square&logo=go&logoColor=white" alt="SPS Excel in Go"></a>
+    <a href="https://go.dev"><img src="https://img.shields.io/badge/Go-00ADD8.svg?logo=go&logoColor=white&style=flat-square" alt="Go"></a>
+    <a href="https://www.gnu.org/licenses/gpl-3.0"><img src="https://img.shields.io/badge/License-GPLv3-blue.svg?style=flat-square" alt="License: GPLv3"></a>
+</p>
+++++
+
+
+== Introduction
+
+{var-spszerone-image-sps-go-excel} is an excel tools written in {var-language-image-go-with-footnote}.
+
+.Supports
+* Read
+* Write
+* Diff

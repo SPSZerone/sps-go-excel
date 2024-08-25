@@ -1,0 +1,6 @@
+// settings
+:toc:
+:toclevels: 5
+:idprefix:
+:idseparator: -
+:source-language: go

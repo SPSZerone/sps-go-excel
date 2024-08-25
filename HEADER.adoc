@@ -1,0 +1,4 @@
+include::HEADER-SETTINGS.adoc[]
+include::HEADER-GITHUB.adoc[]
+include::HEADER-URLS.adoc[]
+include::HEADER-VARIABLES.adoc[]

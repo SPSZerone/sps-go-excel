@@ -1,0 +1,13 @@
+// URLs: SPSZerone
+:url-github-SPSZerone: https://github.com/SPSZerone
+:url-github-SPSZerone-sps-go-excel: {url-github-SPSZerone}/sps-go-excel
+// URLs: License
+:url-license-gpl-v3: https://www.gnu.org/licenses/gpl-3.0
+// URLs: Language
+:url-language-go: https://go.dev
+// Images: GitHub Badges - static - SPSZerone - go
+:image-url-github-badge-static-SPSZerone-sps-go-excel: https://img.shields.io/badge/SPS Excel-00ADD8?style=flat-square&logo=go&logoColor=white
+// Images: GitHub Badges - static - license
+:image-url-github-badge-static-license-gpl-v3: https://img.shields.io/badge/License-GPLv3-blue.svg?style=flat-square
+// Images: GitHub Badges - static - language
+:image-url-github-badge-static-language-go: https://img.shields.io/badge/Go-00ADD8.svg?logo=go&logoColor=white&style=flat-square

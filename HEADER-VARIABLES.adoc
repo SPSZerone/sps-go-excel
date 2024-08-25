@@ -1,0 +1,5 @@
+// VARIABLES: SPSZerone - go
+:var-SPSZerone-image-sps-go-excel: image:{image-url-github-badge-static-SPSZerone-sps-go-excel}[SPS Excel in Go, link={url-github-SPSZerone-sps-go-excel}]
+// VARIABLES: language
+:var-language-image-go: image:{image-url-github-badge-static-language-go}[Go, link={url-language-go}]
+:var-language-image-go-with-footnote: {var-language-image-go}footnote:[{url-language-go}]
