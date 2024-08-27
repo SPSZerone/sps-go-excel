@@ -2,6 +2,9 @@ package excelize
 
 import (
 	"fmt"
+
+	"github.com/xuri/excelize/v2"
+
 	"github.com/SPSZerone/sps-go-excel/excel"
 )
 
@@ -24,52 +27,8 @@ func (s *Sheet) init() {
 	s.cellsRC = make(map[excel.RowId]map[string]excel.Cell)
 }
 
-func (s *Sheet) GetExcel() excel.Excel {
-	return s.excel
-}
-
-func (s *Sheet) SetName(name string) {
-	s.name = name
-}
-
-func (s *Sheet) GetName() string {
-	return s.name
-}
-
-func (s *Sheet) SetIndex(index excel.SheetIndex) {
-	s.index = index
-}
-
-func (s *Sheet) GetIndex() excel.SheetIndex {
-	return s.index
-}
-
-func (s *Sheet) SetRows(rows []excel.Row) {
-
-}
-
-func (s *Sheet) GetRows() []excel.Row {
-	return nil
-}
-
-func (s *Sheet) SetCols(cols []excel.Col) {
-
-}
-
-func (s *Sheet) GetCols() []excel.Col {
-	return nil
-}
-
-func (s *Sheet) SetCell(cell excel.Cell) error {
-	if !s.excel.isWritable() {
-		return fmt.Errorf("excel is not writable")
-	}
-
-	return nil
-}
-
-func (s *Sheet) GetCell(cellId excel.CellId) excel.Cell {
-	return nil
+func (s *Sheet) getExcelFile() *excelize.File {
+	return s.excel.excel
 }
 
 func checkCellId(colName string, rowId excel.RowId) error {
@@ -98,21 +57,99 @@ func (s *Sheet) getCell(colName string, rowId excel.RowId) (excel.Cell, error) {
 	}
 
 	cell, ok := cellRows[rowId]
-	if !ok {
-		cell = newCellCR(colName, rowId)
-		s.cellsCR[colName][rowId] = cell
-		s.cellsRC[rowId][colName] = cell
+	if ok {
+		return cell, nil
 	}
 
-	return cell, nil
+	cellNew, err := newCellCR(colName, rowId)
+	if err != nil {
+		return nil, err
+	}
+
+	s.cellsCR[colName][rowId] = cellNew
+	s.cellsRC[rowId][colName] = cellNew
+	return cellNew, nil
+}
+
+func (s *Sheet) SetName(name string) {
+	s.name = name
+}
+
+func (s *Sheet) GetName() string {
+	return s.name
+}
+
+func (s *Sheet) SetIndex(index excel.SheetIndex) {
+	s.index = index
+}
+
+func (s *Sheet) GetIndex() excel.SheetIndex {
+	return s.index
+}
+
+func (s *Sheet) SetRows(rows []excel.Row) error {
+	return fmt.Errorf("Sheet.SetRows not implemented yet")
+}
+
+func (s *Sheet) GetRows(opts ...excel.Option) ([]excel.Row, error) {
+	excelFile := s.getExcelFile()
+
+	rows, err := excelFile.GetRows(s.name)
+	if err != nil {
+		return nil, err
+	}
+
+	eRows := make([]excel.Row, 0)
+	for i, row := range rows {
+		rowId := excel.RowId(i + 1)
+		eRow, errNew := newRowData(rowId, row)
+		if errNew != nil {
+			return nil, errNew
+		}
+		eRows = append(eRows, eRow)
+	}
+
+	return eRows, nil
+}
+
+func (s *Sheet) SetCols(cols []excel.Col) error {
+	return fmt.Errorf("Sheet.SetCols not implemented yet")
+}
+
+func (s *Sheet) GetCols(opts ...excel.Option) ([]excel.Col, error) {
+	excelFile := s.getExcelFile()
+
+	cols, err := excelFile.GetCols(s.name)
+	if err != nil {
+		return nil, err
+	}
+
+	eCols := make([]excel.Col, 0)
+	for i, col := range cols {
+		colName, errColName := excelize.ColumnNumberToName(i + 1)
+		if errColName != nil {
+			return nil, errColName
+		}
+		eCol, errNew := newColData(colName, col)
+		if errNew != nil {
+			return nil, errNew
+		}
+		eCols = append(eCols, eCol)
+	}
+
+	return eCols, nil
+}
+
+func (s *Sheet) SetCell(cell excel.Cell) error {
+	return s.SetCellI(cell.GetId(), cell.GetValue())
+}
+
+func (s *Sheet) GetCell(cellId excel.CellId, opts ...excel.Option) (excel.Cell, error) {
+	return s.GetCellCR(cellId.Col(), cellId.Row(), opts...)
 }
 
 func (s *Sheet) SetCellI(cellId excel.CellId, value any) error {
-	if !s.excel.isWritable() {
-		return fmt.Errorf("excel is not writable")
-	}
-
-	return nil
+	return s.SetCellCR(cellId.Col(), cellId.Row(), value)
 }
 
 func (s *Sheet) SetCellCR(colName string, rowId excel.RowId, value any) error {
@@ -125,10 +162,13 @@ func (s *Sheet) SetCellCR(colName string, rowId excel.RowId, value any) error {
 		return err
 	}
 
-	excelFile := s.excel.excel
-	cellId := getCellId(colName, rowId)
+	excelFile := s.getExcelFile()
+	cellName, err := joinCellName(colName, rowId)
+	if err != nil {
+		return err
+	}
 
-	err = excelFile.SetCellValue(s.name, cellId, value)
+	err = excelFile.SetCellValue(s.name, cellName, value)
 	return cell.SetValue(value)
 }
 
@@ -138,10 +178,13 @@ func (s *Sheet) GetCellCR(colName string, rowId excel.RowId, opts ...excel.Optio
 		return nil, err
 	}
 
-	excelFile := s.excel.excel
-	cellId := getCellId(colName, rowId)
+	excelFile := s.getExcelFile()
+	cellName, err := joinCellName(colName, rowId)
+	if err != nil {
+		return nil, err
+	}
 
-	value, err := excelFile.GetCellValue(s.name, cellId)
+	value, err := excelFile.GetCellValue(s.name, cellName)
 	if err != nil {
 		return nil, err
 	}
@@ -154,8 +197,30 @@ func (s *Sheet) GetCellCR(colName string, rowId excel.RowId, opts ...excel.Optio
 	return cell, nil
 }
 
+func newRowData(rowId excel.RowId, data []string) (excel.Row, error) {
+	row := newRow(rowId)
+	err := row.SetCellsS(data)
+	if err != nil {
+		return nil, err
+	}
+	return row, nil
+}
+
+func newRow(rowId excel.RowId) excel.Row {
+	row := &Row{id: rowId}
+	row.init()
+	return row
+}
+
 type Row struct {
-	id excel.RowId
+	id    excel.RowId
+	cols  []string
+	cells map[string]excel.Cell
+}
+
+func (r *Row) init() {
+	r.cols = make([]string, 0)
+	r.cells = make(map[string]excel.Cell, 0)
 }
 
 func (r *Row) SetId(rowId excel.RowId) {
@@ -166,88 +231,195 @@ func (r *Row) GetId() excel.RowId {
 	return r.id
 }
 
-func (r *Row) SetCells(cells []excel.Cell) {
-
-}
-
-func (r *Row) GetCells() []excel.Cell {
+func (r *Row) SetCells(cells []excel.Cell) error {
 	return nil
 }
 
-func (r *Row) SetCell(cell excel.Cell) {
-
+func (r *Row) GetCells(opts ...excel.Option) ([]excel.Cell, error) {
+	cells := make([]excel.Cell, 0)
+	for _, col := range r.cols {
+		cell := r.cells[col]
+		cells = append(cells, cell)
+	}
+	return cells, nil
 }
 
-func (r *Row) GetCell(colName string) excel.Cell {
+func (r *Row) SetCellsS(data []string) error {
+	for i, value := range data {
+		num := i + 1
+		col, err := excelize.ColumnNumberToName(num)
+		if err != nil {
+			return err
+		}
+
+		err = r.SetCellC(col, value)
+		if err != nil {
+			return err
+		}
+	}
+
 	return nil
 }
 
-func (r *Row) SetCellCV(colName string, value any) {
+func (r *Row) SetCell(cell excel.Cell) error {
+	if cell == nil {
+		return fmt.Errorf("cell is nil")
+	}
 
+	colName := cell.GetId().Col()
+	r.cols = append(r.cols, colName)
+	r.cells[colName] = cell
+	return nil
 }
 
-type Column struct {
-	name string
+func (r *Row) GetCell(colName string, opts ...excel.Option) (excel.Cell, error) {
+	cell, ok := r.cells[colName]
+	if !ok {
+		return nil, fmt.Errorf("col '%s' not exist", colName)
+	}
+	return cell, nil
 }
 
-func (c *Column) SetName(name string) {
+func (r *Row) SetCellC(colName string, value any) error {
+	// cell id
+	rowId := r.id
+	cellId, err := getCellId(colName, rowId)
+	if err != nil {
+		return err
+	}
+
+	// cell
+	cell := newCell(cellId)
+	err = cell.SetValue(value)
+	if err != nil {
+		return err
+	}
+
+	return r.SetCell(cell)
+}
+
+func newColData(colName string, data []string) (excel.Col, error) {
+	col := newCol(colName)
+	err := col.SetCellsS(data)
+	if err != nil {
+		return nil, err
+	}
+	return col, nil
+}
+
+func newCol(colName string) excel.Col {
+	col := &Col{name: colName}
+	col.init()
+	return col
+}
+
+type Col struct {
+	name  string
+	rows  []excel.RowId
+	cells map[excel.RowId]excel.Cell
+}
+
+func (c *Col) init() {
+	c.rows = make([]excel.RowId, 0)
+	c.cells = make(map[excel.RowId]excel.Cell, 0)
+}
+
+func (c *Col) SetName(name string) {
 	c.name = name
 }
 
-func (c *Column) GetName() string {
+func (c *Col) GetName() string {
 	return c.name
 }
 
-func (c *Column) SetCells(cells []excel.Cell) {
-
-}
-
-func (c *Column) GetCells() []excel.Cell {
+func (c *Col) SetCells(cells []excel.Cell) error {
 	return nil
 }
 
-func (c *Column) SetCell(cell excel.Cell) {
-
+func (c *Col) GetCells(opts ...excel.Option) ([]excel.Cell, error) {
+	cells := make([]excel.Cell, 0)
+	for _, row := range c.rows {
+		cell := c.cells[row]
+		cells = append(cells, cell)
+	}
+	return cells, nil
 }
 
-func (c *Column) GetCell(rowId excel.RowId) excel.Cell {
+func (c *Col) SetCellsS(data []string) error {
+	for i, value := range data {
+		rowId := excel.RowId(i + 1)
+
+		err := c.SetCellR(rowId, value)
+		if err != nil {
+			return err
+		}
+	}
+
 	return nil
 }
 
-func (c *Column) SetCellRV(rowId excel.RowId, value any) {
+func (c *Col) SetCell(cell excel.Cell) error {
+	if cell == nil {
+		return fmt.Errorf("cell is nil")
+	}
 
+	rowId := cell.GetId().Row()
+	c.rows = append(c.rows, rowId)
+	c.cells[rowId] = cell
+	return nil
 }
 
-func newCellId(col string, row excel.RowId) excel.CellId {
-	cellId := &CellId{col: col, row: row}
-	return cellId
+func (c *Col) GetCell(rowId excel.RowId, opts ...excel.Option) (excel.Cell, error) {
+	cell, ok := c.cells[rowId]
+	if !ok {
+		return nil, fmt.Errorf("row '%d' not exist", rowId)
+	}
+	return cell, nil
+}
+
+func (c *Col) SetCellR(rowId excel.RowId, value any) error {
+	// cell id
+	colName := c.name
+	cellId, err := getCellId(colName, rowId)
+	if err != nil {
+		return err
+	}
+
+	// cell
+	cell := newCell(cellId)
+	err = cell.SetValue(value)
+	if err != nil {
+		return err
+	}
+
+	return c.SetCell(cell)
 }
 
 type CellId struct {
-	col string
-	row excel.RowId
+	col  string
+	row  excel.RowId
+	name string
 }
 
-func (i *CellId) SetCol(col string) {
-	i.col = col
-}
-
-func (i *CellId) GetCol() string {
+func (i *CellId) Col() string {
 	return i.col
 }
 
-func (i *CellId) SetRow(rowId excel.RowId) {
-	i.row = rowId
-}
-
-func (i *CellId) GetRow() excel.RowId {
+func (i *CellId) Row() excel.RowId {
 	return i.row
 }
 
-func newCellCR(col string, row excel.RowId) excel.Cell {
-	cellId := newCellId(col, row)
-	cell := &Cell{id: cellId}
-	return cell
+func (i *CellId) Name() string {
+	return i.name
+}
+
+func newCellCR(col string, row excel.RowId) (excel.Cell, error) {
+	cellId, err := getCellId(col, row)
+	if err != nil {
+		return nil, err
+	}
+	cell := newCell(cellId)
+	return cell, nil
 }
 
 func newCell(cellId excel.CellId) excel.Cell {
@@ -275,4 +447,8 @@ func (c *Cell) SetValue(value any) error {
 
 func (c *Cell) GetValue() any {
 	return c.value
+}
+
+func (c *Cell) String() string {
+	return fmt.Sprintf("「%s」=>『%+v』", c.id.Name(), c.value)
 }

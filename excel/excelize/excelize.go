@@ -2,9 +2,11 @@ package excelize
 
 import (
 	"fmt"
-	spsos "github.com/SPSZerone/sps-go-zerone/os"
-	"github.com/xuri/excelize/v2"
 	"io"
+
+	"github.com/xuri/excelize/v2"
+
+	spsos "github.com/SPSZerone/sps-go-zerone/os"
 
 	"github.com/SPSZerone/sps-go-excel/excel"
 )
@@ -110,11 +112,11 @@ func (e *Excel) Read(opts ...excel.Option) (int64, error) {
 }
 
 func (e *Excel) ReadFrom(reader io.Reader) (int64, error) {
-	return 0, nil
+	return 0, fmt.Errorf("Excel.ReadFrom not implemented yet")
 }
 
 func (e *Excel) ReadFromO(reader io.Reader, opts ...excel.Option) (int64, error) {
-	return 0, nil
+	return 0, fmt.Errorf("Excel.ReadFromO not implemented yet")
 }
 
 func (e *Excel) write(opts ...excel.Option) error {
@@ -215,6 +217,12 @@ func (e *Excel) SheetDelete(name string) error {
 	if !ok {
 		return fmt.Errorf("sheet '%s' not exist", name)
 	}
+
+	err := e.excel.DeleteSheet(name)
+	if err != nil {
+		return err
+	}
+
 	delete(e.sheets, name)
 	return nil
 }

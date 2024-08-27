@@ -10,14 +10,14 @@ type Sheet interface {
 	SetIndex(index SheetIndex)
 	GetIndex() SheetIndex
 
-	SetRows(rows []Row)
-	GetRows() []Row
+	SetRows(rows []Row) error
+	GetRows(opts ...Option) ([]Row, error)
 
-	SetCols(cols []Col)
-	GetCols() []Col
+	SetCols(cols []Col) error
+	GetCols(opts ...Option) ([]Col, error)
 
 	SetCell(cell Cell) error
-	GetCell(cellId CellId) Cell
+	GetCell(cellId CellId, opts ...Option) (Cell, error)
 
 	SetCellI(cellId CellId, value any) error
 	SetCellCR(colName string, rowId RowId, value any) error
@@ -28,34 +28,34 @@ type Row interface {
 	SetId(rowId RowId)
 	GetId() RowId
 
-	SetCells(cells []Cell)
-	GetCells() []Cell
+	SetCells(cells []Cell) error
+	GetCells(opts ...Option) ([]Cell, error)
+	SetCellsS(cells []string) error
 
-	SetCell(cell Cell)
-	GetCell(colName string) Cell
+	SetCell(cell Cell) error
+	GetCell(colName string, opts ...Option) (Cell, error)
 
-	SetCellCV(colName string, value any)
+	SetCellC(colName string, value any) error
 }
 
 type Col interface {
 	SetName(name string)
 	GetName() string
 
-	SetCells(cells []Cell)
-	GetCells() []Cell
+	SetCells(cells []Cell) error
+	GetCells(opts ...Option) ([]Cell, error)
+	SetCellsS(cells []string) error
 
-	SetCell(cell Cell)
-	GetCell(rowId RowId) Cell
+	SetCell(cell Cell) error
+	GetCell(rowId RowId, opts ...Option) (Cell, error)
 
-	SetCellRV(rowId RowId, value any)
+	SetCellR(rowId RowId, value any) error
 }
 
 type CellId interface {
-	SetCol(col string)
-	GetCol() string
-
-	SetRow(rowId RowId)
-	GetRow() RowId
+	Col() string
+	Row() RowId
+	Name() string
 }
 
 type Cell interface {
@@ -64,4 +64,6 @@ type Cell interface {
 
 	SetValue(value any) error
 	GetValue() any
+
+	String() string
 }

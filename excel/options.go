@@ -3,7 +3,7 @@ package excel
 type Option func(*Options)
 type Flag uint32
 
-// Flags to OpenFile OpenExcel OpenExcelCustom NewFile NewExcel NewExcelCustom wrapping those of the underlying system.
+// Flags to OpenFile NewFile NewExcel NewExcelCustom wrapping those of the underlying system.
 // Exactly one of OReadOnly, OWriteOnly, or OReadWrite must be specified.
 // The remaining values may be or'ed in to control behavior.
 const (
