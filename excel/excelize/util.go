@@ -6,18 +6,6 @@ import (
 	"github.com/SPSZerone/sps-go-excel/excel"
 )
 
-func joinCellName(colName string, rowId excel.RowId) (string, error) {
-	return excelize.JoinCellName(colName, int(rowId))
-}
-
-func splitCellName(cellName string) (string, excel.RowId, error) {
-	colName, rowId, err := excelize.SplitCellName(cellName)
-	if err != nil {
-		return "", 0, err
-	}
-	return colName, excel.RowId(rowId), nil
-}
-
 var cellIds = make(map[string]excel.CellId)
 
 func getCellId(colName string, rowId excel.RowId) (excel.CellId, error) {
@@ -37,5 +25,18 @@ func getCellId(colName string, rowId excel.RowId) (excel.CellId, error) {
 	}
 
 	cellId = &CellId{col: col, row: row, name: cellName}
+	cellIds[cellName] = cellId
 	return cellId, nil
+}
+
+func joinCellName(colName string, rowId excel.RowId) (string, error) {
+	return excelize.JoinCellName(colName, int(rowId))
+}
+
+func splitCellName(cellName string) (string, excel.RowId, error) {
+	colName, rowId, err := excelize.SplitCellName(cellName)
+	if err != nil {
+		return "", 0, err
+	}
+	return colName, excel.RowId(rowId), nil
 }

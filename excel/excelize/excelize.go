@@ -31,7 +31,7 @@ func (e *Excel) updateOptions(opts ...excel.Option) {
 	}
 }
 
-func (e *Excel) isWritable() bool {
+func (e *Excel) IsWritable() bool {
 	return e.options.Flag.IsWritable()
 }
 
@@ -120,13 +120,13 @@ func (e *Excel) ReadFromO(reader io.Reader, opts ...excel.Option) (int64, error)
 }
 
 func (e *Excel) write(opts ...excel.Option) error {
-	if !e.isWritable() {
+	if !e.IsWritable() {
 		return fmt.Errorf("excel is not writable")
 	}
 
 	excelFile := e.excel
 	for _, sheet := range e.sheets {
-		index := int(sheet.GetIndex())
+		index := int(sheet.Index())
 		excelFile.SetActiveSheet(index)
 	}
 
@@ -198,6 +198,10 @@ func (e *Excel) GetActiveSheet() excel.Sheet {
 }
 
 func (e *Excel) SheetCreate(name string) (excel.Sheet, error) {
+	if !e.IsWritable() {
+		return nil, fmt.Errorf("excel is not writable")
+	}
+
 	sheet, ok := e.sheets[name]
 	if ok {
 		return sheet, fmt.Errorf("sheet '%s' already exists", name)
@@ -213,6 +217,10 @@ func (e *Excel) SheetCreate(name string) (excel.Sheet, error) {
 }
 
 func (e *Excel) SheetDelete(name string) error {
+	if !e.IsWritable() {
+		return fmt.Errorf("excel is not writable")
+	}
+
 	_, ok := e.sheets[name]
 	if !ok {
 		return fmt.Errorf("sheet '%s' not exist", name)

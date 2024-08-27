@@ -31,24 +31,16 @@ func (s *Sheet) getExcelFile() *excelize.File {
 	return s.excel.excel
 }
 
-func checkCellId(colName string, rowId excel.RowId) error {
-	if colName == "" {
-		return fmt.Errorf("col name is empty")
-	}
-	if rowId == 0 {
-		return fmt.Errorf("row id is 0")
-	}
-	return nil
-}
-
-func (s *Sheet) getCell(colName string, rowId excel.RowId) (excel.Cell, error) {
-	if err := checkCellId(colName, rowId); err != nil {
+func (s *Sheet) getCell(colNam string, rowId excel.RowId) (excel.Cell, error) {
+	cellId, err := getCellId(colNam, rowId)
+	if err != nil {
 		return nil, err
 	}
+	col := cellId.Col()
 
-	cellRows, ok := s.cellsCR[colName]
+	cellRows, ok := s.cellsCR[col]
 	if !ok {
-		s.cellsCR[colName] = make(map[excel.RowId]excel.Cell)
+		s.cellsCR[col] = make(map[excel.RowId]excel.Cell)
 	}
 
 	_, ok = s.cellsRC[rowId]
@@ -61,33 +53,32 @@ func (s *Sheet) getCell(colName string, rowId excel.RowId) (excel.Cell, error) {
 		return cell, nil
 	}
 
-	cellNew, err := newCellCR(colName, rowId)
+	cellNew, err := newCellCR(col, rowId)
 	if err != nil {
 		return nil, err
 	}
 
-	s.cellsCR[colName][rowId] = cellNew
-	s.cellsRC[rowId][colName] = cellNew
+	s.cellsCR[col][rowId] = cellNew
+	s.cellsRC[rowId][col] = cellNew
 	return cellNew, nil
 }
 
-func (s *Sheet) SetName(name string) {
-	s.name = name
+func (s *Sheet) IsWritable() bool {
+	return s.excel.IsWritable()
 }
 
-func (s *Sheet) GetName() string {
+func (s *Sheet) Name() string {
 	return s.name
 }
 
-func (s *Sheet) SetIndex(index excel.SheetIndex) {
-	s.index = index
-}
-
-func (s *Sheet) GetIndex() excel.SheetIndex {
+func (s *Sheet) Index() excel.SheetIndex {
 	return s.index
 }
 
 func (s *Sheet) SetRows(rows []excel.Row) error {
+	if !s.IsWritable() {
+		return fmt.Errorf("excel is not writable")
+	}
 	return fmt.Errorf("Sheet.SetRows not implemented yet")
 }
 
@@ -113,6 +104,9 @@ func (s *Sheet) GetRows(opts ...excel.Option) ([]excel.Row, error) {
 }
 
 func (s *Sheet) SetCols(cols []excel.Col) error {
+	if !s.IsWritable() {
+		return fmt.Errorf("excel is not writable")
+	}
 	return fmt.Errorf("Sheet.SetCols not implemented yet")
 }
 
@@ -141,7 +135,7 @@ func (s *Sheet) GetCols(opts ...excel.Option) ([]excel.Col, error) {
 }
 
 func (s *Sheet) SetCell(cell excel.Cell) error {
-	return s.SetCellI(cell.GetId(), cell.GetValue())
+	return s.SetCellI(cell.Id(), cell.GetValue())
 }
 
 func (s *Sheet) GetCell(cellId excel.CellId, opts ...excel.Option) (excel.Cell, error) {
@@ -153,7 +147,7 @@ func (s *Sheet) SetCellI(cellId excel.CellId, value any) error {
 }
 
 func (s *Sheet) SetCellCR(colName string, rowId excel.RowId, value any) error {
-	if !s.excel.isWritable() {
+	if !s.IsWritable() {
 		return fmt.Errorf("excel is not writable")
 	}
 
@@ -226,11 +220,7 @@ func (r *Row) init() {
 	r.cells = make(map[string]excel.Cell, 0)
 }
 
-func (r *Row) SetId(rowId excel.RowId) {
-	r.id = rowId
-}
-
-func (r *Row) GetId() excel.RowId {
+func (r *Row) Id() excel.RowId {
 	return r.id
 }
 
@@ -268,8 +258,7 @@ func (r *Row) SetCell(cell excel.Cell) error {
 	if cell == nil {
 		return fmt.Errorf("cell is nil")
 	}
-
-	colName := cell.GetId().Col()
+	colName := cell.Id().Col()
 	r.cols = append(r.cols, colName)
 	r.cells[colName] = cell
 	return nil
@@ -327,11 +316,7 @@ func (c *Col) init() {
 	c.cells = make(map[excel.RowId]excel.Cell, 0)
 }
 
-func (c *Col) SetName(name string) {
-	c.name = name
-}
-
-func (c *Col) GetName() string {
+func (c *Col) Name() string {
 	return c.name
 }
 
@@ -365,8 +350,7 @@ func (c *Col) SetCell(cell excel.Cell) error {
 	if cell == nil {
 		return fmt.Errorf("cell is nil")
 	}
-
-	rowId := cell.GetId().Row()
+	rowId := cell.Id().Row()
 	c.rows = append(c.rows, rowId)
 	c.cells[rowId] = cell
 	return nil
@@ -435,11 +419,7 @@ type Cell struct {
 	value any
 }
 
-func (c *Cell) SetId(cellId excel.CellId) {
-	c.id = cellId
-}
-
-func (c *Cell) GetId() excel.CellId {
+func (c *Cell) Id() excel.CellId {
 	return c.id
 }
 

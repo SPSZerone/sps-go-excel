@@ -4,11 +4,8 @@ type SheetIndex int
 type RowId uint32
 
 type Sheet interface {
-	SetName(name string)
-	GetName() string
-
-	SetIndex(index SheetIndex)
-	GetIndex() SheetIndex
+	Name() string
+	Index() SheetIndex
 
 	SetRows(rows []Row) error
 	GetRows(opts ...Option) ([]Row, error)
@@ -25,8 +22,7 @@ type Sheet interface {
 }
 
 type Row interface {
-	SetId(rowId RowId)
-	GetId() RowId
+	Id() RowId
 
 	SetCells(cells []Cell) error
 	GetCells(opts ...Option) ([]Cell, error)
@@ -39,8 +35,7 @@ type Row interface {
 }
 
 type Col interface {
-	SetName(name string)
-	GetName() string
+	Name() string
 
 	SetCells(cells []Cell) error
 	GetCells(opts ...Option) ([]Cell, error)
@@ -59,8 +54,7 @@ type CellId interface {
 }
 
 type Cell interface {
-	SetId(cellId CellId)
-	GetId() CellId
+	Id() CellId
 
 	SetValue(value any) error
 	GetValue() any

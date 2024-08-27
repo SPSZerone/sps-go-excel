@@ -70,7 +70,7 @@ func TestWriteFile(t *testing.T) {
 	var err error
 
 	testSheet := func(sheet excel.Sheet) {
-		name := sheet.GetName()
+		name := sheet.Name()
 		err = sheet.SetCellCR("A", 1, fmt.Sprintf("%s: Hello, A1.", name))
 		assert.NoError(t, err, "SetCellCR fail:%+v", err)
 		err = sheet.SetCellCR("B", 2, fmt.Sprintf("%s: Hello, B2.", name))
@@ -112,25 +112,25 @@ func TestReadFile(t *testing.T) {
 	require.NoError(t, errRead)
 
 	testSheet := func(sheet excel.Sheet) {
-		t.Logf("Sheet:%+v ==================================================", sheet.GetName())
+		t.Logf("Sheet:%+v ==================================================", sheet.Name())
 		cell, err := sheet.GetCellCR("A", 1)
 		assert.NoError(t, err, "SetCellCR fail:%+v", err)
 		assert.NotNil(t, cell)
-		t.Logf("Col:%+v Row:%+v Val:%+v", cell.GetId().Col(), cell.GetId().Row(), cell.GetValue())
+		t.Logf("Col:%+v Row:%+v Val:%+v", cell.Id().Col(), cell.Id().Row(), cell.GetValue())
 		cell, err = sheet.GetCellCR("B", 2)
 		assert.NoError(t, err, "SetCellCR fail:%+v", err)
 		assert.NotNil(t, cell)
-		t.Logf("Col:%+v Row:%+v Val:%+v", cell.GetId().Col(), cell.GetId().Row(), cell.GetValue())
+		t.Logf("Col:%+v Row:%+v Val:%+v", cell.Id().Col(), cell.Id().Row(), cell.GetValue())
 		cell, err = sheet.GetCellCR("C", 3)
 		assert.NoError(t, err, "SetCellCR fail:%+v", err)
 		assert.NotNil(t, cell)
-		t.Logf("Col:%+v Row:%+v Val:%+v", cell.GetId().Col(), cell.GetId().Row(), cell.GetValue())
+		t.Logf("Col:%+v Row:%+v Val:%+v", cell.Id().Col(), cell.Id().Row(), cell.GetValue())
 	}
 
 	defaultSheet := e.GetActiveSheet()
 	testSheet(defaultSheet)
 
-	err := defaultSheet.SetCellCR("A", 1, fmt.Sprintf("%s: Hello, A1.", defaultSheet.GetName()))
+	err := defaultSheet.SetCellCR("A", 1, fmt.Sprintf("%s: Hello, A1.", defaultSheet.Name()))
 	require.Error(t, err, "SetCellCR fail:%+v", err)
 
 	for i := 1; i <= testFileSheetCount; i++ {
@@ -154,7 +154,7 @@ func TestReadRowCol(t *testing.T) {
 	_, errRead := e.Read()
 	require.NoError(t, errRead)
 
-	printCells := func(cells []excel.Cell, builder *strings.Builder) {
+	onGetCells := func(cells []excel.Cell, builder *strings.Builder) {
 		for i, cell := range cells {
 			if i == 0 {
 				builder.WriteString(fmt.Sprintf(" | %s", cell))
@@ -174,12 +174,12 @@ func TestReadRowCol(t *testing.T) {
 		require.NotNil(t, rows)
 		for _, row := range rows {
 			builder.Reset()
-			builder.WriteString(fmt.Sprintf("Sheet:%v", sheet.GetName()))
-			builder.WriteString(fmt.Sprintf(" RowId:%v", row.GetId()))
+			builder.WriteString(fmt.Sprintf("Sheet:%v", sheet.Name()))
+			builder.WriteString(fmt.Sprintf(" RowId:%v", row.Id()))
 
 			cells, errCells := row.GetCells()
 			require.NoError(t, errCells, "GetCells fail:%+v", errCells)
-			printCells(cells, &builder)
+			onGetCells(cells, &builder)
 
 			t.Log(builder.String())
 		}
@@ -193,12 +193,12 @@ func TestReadRowCol(t *testing.T) {
 		require.NotNil(t, cols)
 		for _, col := range cols {
 			builder.Reset()
-			builder.WriteString(fmt.Sprintf("Sheet:%v", sheet.GetName()))
-			builder.WriteString(fmt.Sprintf(" ColName:%v", col.GetName()))
+			builder.WriteString(fmt.Sprintf("Sheet:%v", sheet.Name()))
+			builder.WriteString(fmt.Sprintf(" ColName:%v", col.Name()))
 
 			cells, errCells := col.GetCells()
 			require.NoError(t, errCells, "GetCells fail:%+v", errCells)
-			printCells(cells, &builder)
+			onGetCells(cells, &builder)
 
 			t.Log(builder.String())
 		}

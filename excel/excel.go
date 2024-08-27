@@ -72,6 +72,7 @@ type Excel interface {
 	ReadFrom(reader io.Reader) (int64, error)
 	ReadFromO(reader io.Reader, opts ...Option) (int64, error)
 
+	IsWritable() bool
 	Write(opts ...Option) (int64, error)
 	WriteTo(writer io.Writer) (int64, error)
 	WriteToO(writer io.Writer, opts ...Option) (int64, error)
