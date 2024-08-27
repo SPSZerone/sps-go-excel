@@ -43,9 +43,9 @@ func TestCreateSheet(t *testing.T) {
 	var err error
 
 	sheetName := "sheet-1-0"
-	_, err = e.SheetCreate(fmt.Sprintf(sheetName))
+	_, err = e.SheetCreate(sheetName)
 	require.NoError(t, err, "SheetCreate fail:%+v", err)
-	_, err = e.SheetCreate(fmt.Sprintf(sheetName))
+	_, err = e.SheetCreate(sheetName)
 	require.Error(t, err)
 
 	for i := 0; i < 3; i++ {
@@ -181,7 +181,7 @@ func TestReadRowCol(t *testing.T) {
 			require.NoError(t, errCells, "GetCells fail:%+v", errCells)
 			printCells(cells, &builder)
 
-			t.Logf(builder.String())
+			t.Log(builder.String())
 		}
 	}
 
@@ -200,7 +200,7 @@ func TestReadRowCol(t *testing.T) {
 			require.NoError(t, errCells, "GetCells fail:%+v", errCells)
 			printCells(cells, &builder)
 
-			t.Logf(builder.String())
+			t.Log(builder.String())
 		}
 	}
 }

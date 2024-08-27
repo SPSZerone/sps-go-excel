@@ -169,6 +169,9 @@ func (s *Sheet) SetCellCR(colName string, rowId excel.RowId, value any) error {
 	}
 
 	err = excelFile.SetCellValue(s.name, cellName, value)
+	if err != nil {
+		return nil
+	}
 	return cell.SetValue(value)
 }
 
