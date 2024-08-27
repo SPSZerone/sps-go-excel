@@ -116,15 +116,15 @@ func TestReadFile(t *testing.T) {
 		cell, err := sheet.GetCellCR("A", 1)
 		assert.NoError(t, err, "SetCellCR fail:%+v", err)
 		assert.NotNil(t, cell)
-		t.Logf("Col:%+v Row:%+v Val:%+v", cell.Id().Col(), cell.Id().Row(), cell.GetValue())
+		t.Logf("Col:%+v Row:%+v Val:%+v", cell.Id().Col(), cell.Id().Row(), cell.Value())
 		cell, err = sheet.GetCellCR("B", 2)
 		assert.NoError(t, err, "SetCellCR fail:%+v", err)
 		assert.NotNil(t, cell)
-		t.Logf("Col:%+v Row:%+v Val:%+v", cell.Id().Col(), cell.Id().Row(), cell.GetValue())
+		t.Logf("Col:%+v Row:%+v Val:%+v", cell.Id().Col(), cell.Id().Row(), cell.Value())
 		cell, err = sheet.GetCellCR("C", 3)
 		assert.NoError(t, err, "SetCellCR fail:%+v", err)
 		assert.NotNil(t, cell)
-		t.Logf("Col:%+v Row:%+v Val:%+v", cell.Id().Col(), cell.Id().Row(), cell.GetValue())
+		t.Logf("Col:%+v Row:%+v Val:%+v", cell.Id().Col(), cell.Id().Row(), cell.Value())
 	}
 
 	defaultSheet := e.GetActiveSheet()
@@ -177,8 +177,8 @@ func TestReadRowCol(t *testing.T) {
 			builder.WriteString(fmt.Sprintf("Sheet:%v", sheet.Name()))
 			builder.WriteString(fmt.Sprintf(" RowId:%v", row.Id()))
 
-			cells, errCells := row.GetCells()
-			require.NoError(t, errCells, "GetCells fail:%+v", errCells)
+			cells, errCells := row.Cells()
+			require.NoError(t, errCells, "Cells fail:%+v", errCells)
 			onGetCells(cells, &builder)
 
 			t.Log(builder.String())
@@ -196,8 +196,8 @@ func TestReadRowCol(t *testing.T) {
 			builder.WriteString(fmt.Sprintf("Sheet:%v", sheet.Name()))
 			builder.WriteString(fmt.Sprintf(" ColName:%v", col.Name()))
 
-			cells, errCells := col.GetCells()
-			require.NoError(t, errCells, "GetCells fail:%+v", errCells)
+			cells, errCells := col.Cells()
+			require.NoError(t, errCells, "Cells fail:%+v", errCells)
 			onGetCells(cells, &builder)
 
 			t.Log(builder.String())

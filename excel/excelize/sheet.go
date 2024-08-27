@@ -8,7 +8,7 @@ import (
 	"github.com/SPSZerone/sps-go-excel/excel"
 )
 
-func newSheet(excel *Excel, name string, index excel.SheetIndex) excel.Sheet {
+func newSheet(excel *Excel, name string, index excel.SheetIndex) *Sheet {
 	sheet := &Sheet{excel: excel, name: name, index: index}
 	sheet.init()
 	return sheet
@@ -18,20 +18,20 @@ type Sheet struct {
 	excel   *Excel
 	name    string
 	index   excel.SheetIndex
-	cellsCR map[string]map[excel.RowId]excel.Cell
-	cellsRC map[excel.RowId]map[string]excel.Cell
+	cellsCR map[string]map[excel.RowId]*Cell
+	cellsRC map[excel.RowId]map[string]*Cell
 }
 
 func (s *Sheet) init() {
-	s.cellsCR = make(map[string]map[excel.RowId]excel.Cell)
-	s.cellsRC = make(map[excel.RowId]map[string]excel.Cell)
+	s.cellsCR = make(map[string]map[excel.RowId]*Cell)
+	s.cellsRC = make(map[excel.RowId]map[string]*Cell)
 }
 
 func (s *Sheet) getExcelFile() *excelize.File {
 	return s.excel.excel
 }
 
-func (s *Sheet) getCell(colNam string, rowId excel.RowId) (excel.Cell, error) {
+func (s *Sheet) getCell(colNam string, rowId excel.RowId) (*Cell, error) {
 	cellId, err := getCellId(colNam, rowId)
 	if err != nil {
 		return nil, err
@@ -40,12 +40,12 @@ func (s *Sheet) getCell(colNam string, rowId excel.RowId) (excel.Cell, error) {
 
 	cellRows, ok := s.cellsCR[col]
 	if !ok {
-		s.cellsCR[col] = make(map[excel.RowId]excel.Cell)
+		s.cellsCR[col] = make(map[excel.RowId]*Cell)
 	}
 
 	_, ok = s.cellsRC[rowId]
 	if !ok {
-		s.cellsRC[rowId] = make(map[string]excel.Cell)
+		s.cellsRC[rowId] = make(map[string]*Cell)
 	}
 
 	cell, ok := cellRows[rowId]
@@ -135,7 +135,7 @@ func (s *Sheet) GetCols(opts ...excel.Option) ([]excel.Col, error) {
 }
 
 func (s *Sheet) SetCell(cell excel.Cell) error {
-	return s.SetCellI(cell.Id(), cell.GetValue())
+	return s.SetCellI(cell.Id(), cell.Value())
 }
 
 func (s *Sheet) GetCell(cellId excel.CellId, opts ...excel.Option) (excel.Cell, error) {
@@ -194,7 +194,7 @@ func (s *Sheet) GetCellCR(colName string, rowId excel.RowId, opts ...excel.Optio
 	return cell, nil
 }
 
-func newRowData(rowId excel.RowId, data []string) (excel.Row, error) {
+func newRowData(rowId excel.RowId, data []string) (*Row, error) {
 	row := newRow(rowId)
 	err := row.SetCellsS(data)
 	if err != nil {
@@ -203,7 +203,7 @@ func newRowData(rowId excel.RowId, data []string) (excel.Row, error) {
 	return row, nil
 }
 
-func newRow(rowId excel.RowId) excel.Row {
+func newRow(rowId excel.RowId) *Row {
 	row := &Row{id: rowId}
 	row.init()
 	return row
@@ -228,7 +228,7 @@ func (r *Row) SetCells(cells []excel.Cell) error {
 	return nil
 }
 
-func (r *Row) GetCells(opts ...excel.Option) ([]excel.Cell, error) {
+func (r *Row) Cells(opts ...excel.Option) ([]excel.Cell, error) {
 	cells := make([]excel.Cell, 0)
 	for _, col := range r.cols {
 		cell := r.cells[col]
@@ -264,7 +264,7 @@ func (r *Row) SetCell(cell excel.Cell) error {
 	return nil
 }
 
-func (r *Row) GetCell(colName string, opts ...excel.Option) (excel.Cell, error) {
+func (r *Row) Cell(colName string, opts ...excel.Option) (excel.Cell, error) {
 	cell, ok := r.cells[colName]
 	if !ok {
 		return nil, fmt.Errorf("col '%s' not exist", colName)
@@ -290,7 +290,7 @@ func (r *Row) SetCellC(colName string, value any) error {
 	return r.SetCell(cell)
 }
 
-func newColData(colName string, data []string) (excel.Col, error) {
+func newColData(colName string, data []string) (*Col, error) {
 	col := newCol(colName)
 	err := col.SetCellsS(data)
 	if err != nil {
@@ -299,7 +299,7 @@ func newColData(colName string, data []string) (excel.Col, error) {
 	return col, nil
 }
 
-func newCol(colName string) excel.Col {
+func newCol(colName string) *Col {
 	col := &Col{name: colName}
 	col.init()
 	return col
@@ -324,7 +324,7 @@ func (c *Col) SetCells(cells []excel.Cell) error {
 	return nil
 }
 
-func (c *Col) GetCells(opts ...excel.Option) ([]excel.Cell, error) {
+func (c *Col) Cells(opts ...excel.Option) ([]excel.Cell, error) {
 	cells := make([]excel.Cell, 0)
 	for _, row := range c.rows {
 		cell := c.cells[row]
@@ -356,7 +356,7 @@ func (c *Col) SetCell(cell excel.Cell) error {
 	return nil
 }
 
-func (c *Col) GetCell(rowId excel.RowId, opts ...excel.Option) (excel.Cell, error) {
+func (c *Col) Cell(rowId excel.RowId, opts ...excel.Option) (excel.Cell, error) {
 	cell, ok := c.cells[rowId]
 	if !ok {
 		return nil, fmt.Errorf("row '%d' not exist", rowId)
@@ -400,7 +400,7 @@ func (i *CellId) Name() string {
 	return i.name
 }
 
-func newCellCR(col string, row excel.RowId) (excel.Cell, error) {
+func newCellCR(col string, row excel.RowId) (*Cell, error) {
 	cellId, err := getCellId(col, row)
 	if err != nil {
 		return nil, err
@@ -409,7 +409,7 @@ func newCellCR(col string, row excel.RowId) (excel.Cell, error) {
 	return cell, nil
 }
 
-func newCell(cellId excel.CellId) excel.Cell {
+func newCell(cellId excel.CellId) *Cell {
 	cell := &Cell{id: cellId}
 	return cell
 }
@@ -428,7 +428,7 @@ func (c *Cell) SetValue(value any) error {
 	return nil
 }
 
-func (c *Cell) GetValue() any {
+func (c *Cell) Value() any {
 	return c.value
 }
 

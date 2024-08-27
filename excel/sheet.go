@@ -23,28 +23,14 @@ type Sheet interface {
 
 type Row interface {
 	Id() RowId
-
-	SetCells(cells []Cell) error
-	GetCells(opts ...Option) ([]Cell, error)
-	SetCellsS(cells []string) error
-
-	SetCell(cell Cell) error
-	GetCell(colName string, opts ...Option) (Cell, error)
-
-	SetCellC(colName string, value any) error
+	Cells(opts ...Option) ([]Cell, error)
+	Cell(colName string, opts ...Option) (Cell, error)
 }
 
 type Col interface {
 	Name() string
-
-	SetCells(cells []Cell) error
-	GetCells(opts ...Option) ([]Cell, error)
-	SetCellsS(cells []string) error
-
-	SetCell(cell Cell) error
-	GetCell(rowId RowId, opts ...Option) (Cell, error)
-
-	SetCellR(rowId RowId, value any) error
+	Cells(opts ...Option) ([]Cell, error)
+	Cell(rowId RowId, opts ...Option) (Cell, error)
 }
 
 type CellId interface {
@@ -55,9 +41,6 @@ type CellId interface {
 
 type Cell interface {
 	Id() CellId
-
-	SetValue(value any) error
-	GetValue() any
-
+	Value() any
 	String() string
 }
