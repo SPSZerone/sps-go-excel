@@ -11,6 +11,8 @@ import (
 	"github.com/SPSZerone/sps-go-excel/excel"
 )
 
+var errExcelIsNotWritable = fmt.Errorf("excel is not writable")
+
 func init() {
 	newer := func(options *excel.Options) excel.Excel {
 		return &Excel{options: options}
@@ -121,7 +123,7 @@ func (e *Excel) ReadFromO(reader io.Reader, opts ...excel.Option) (int64, error)
 
 func (e *Excel) write(opts ...excel.Option) error {
 	if !e.IsWritable() {
-		return fmt.Errorf("excel is not writable")
+		return errExcelIsNotWritable
 	}
 
 	excelFile := e.excel
@@ -199,7 +201,7 @@ func (e *Excel) GetActiveSheet() excel.Sheet {
 
 func (e *Excel) SheetCreate(name string) (excel.Sheet, error) {
 	if !e.IsWritable() {
-		return nil, fmt.Errorf("excel is not writable")
+		return nil, errExcelIsNotWritable
 	}
 
 	sheet, ok := e.sheets[name]
@@ -218,7 +220,7 @@ func (e *Excel) SheetCreate(name string) (excel.Sheet, error) {
 
 func (e *Excel) SheetDelete(name string) error {
 	if !e.IsWritable() {
-		return fmt.Errorf("excel is not writable")
+		return errExcelIsNotWritable
 	}
 
 	_, ok := e.sheets[name]

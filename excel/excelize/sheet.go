@@ -77,7 +77,7 @@ func (s *Sheet) Index() excel.SheetIndex {
 
 func (s *Sheet) SetRows(rows []excel.Row) error {
 	if !s.IsWritable() {
-		return fmt.Errorf("excel is not writable")
+		return errExcelIsNotWritable
 	}
 	return fmt.Errorf("Sheet.SetRows not implemented yet")
 }
@@ -105,7 +105,7 @@ func (s *Sheet) GetRows(opts ...excel.Option) ([]excel.Row, error) {
 
 func (s *Sheet) SetCols(cols []excel.Col) error {
 	if !s.IsWritable() {
-		return fmt.Errorf("excel is not writable")
+		return errExcelIsNotWritable
 	}
 	return fmt.Errorf("Sheet.SetCols not implemented yet")
 }
@@ -148,7 +148,7 @@ func (s *Sheet) SetCellI(cellId excel.CellId, value any) error {
 
 func (s *Sheet) SetCellCR(colName string, rowId excel.RowId, value any) error {
 	if !s.IsWritable() {
-		return fmt.Errorf("excel is not writable")
+		return errExcelIsNotWritable
 	}
 
 	cell, err := s.getCell(colName, rowId)

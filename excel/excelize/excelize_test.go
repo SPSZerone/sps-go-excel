@@ -4,11 +4,14 @@ import (
 	"fmt"
 	"strings"
 	"testing"
+	"time"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
 	"github.com/SPSZerone/sps-go-excel/excel"
+
+	spstime "github.com/SPSZerone/sps-go-zerone/time"
 )
 
 const (
@@ -111,24 +114,24 @@ func TestReadFile(t *testing.T) {
 	_, errRead := e.Read()
 	require.NoError(t, errRead)
 
-	testSheet := func(sheet excel.Sheet) {
+	onGetSheet := func(sheet excel.Sheet) {
 		t.Logf("Sheet:%+v ==================================================", sheet.Name())
 		cell, err := sheet.GetCellCR("A", 1)
-		assert.NoError(t, err, "SetCellCR fail:%+v", err)
+		assert.NoError(t, err, "GetCellCR fail:%+v", err)
 		assert.NotNil(t, cell)
-		t.Logf("Col:%+v Row:%+v Val:%+v", cell.Id().Col(), cell.Id().Row(), cell.Value())
+		t.Logf("%s", cell)
 		cell, err = sheet.GetCellCR("B", 2)
-		assert.NoError(t, err, "SetCellCR fail:%+v", err)
+		assert.NoError(t, err, "GetCellCR fail:%+v", err)
 		assert.NotNil(t, cell)
-		t.Logf("Col:%+v Row:%+v Val:%+v", cell.Id().Col(), cell.Id().Row(), cell.Value())
+		t.Logf("%s", cell)
 		cell, err = sheet.GetCellCR("C", 3)
-		assert.NoError(t, err, "SetCellCR fail:%+v", err)
+		assert.NoError(t, err, "GetCellCR fail:%+v", err)
 		assert.NotNil(t, cell)
-		t.Logf("Col:%+v Row:%+v Val:%+v", cell.Id().Col(), cell.Id().Row(), cell.Value())
+		t.Logf("%s", cell)
 	}
 
 	defaultSheet := e.GetActiveSheet()
-	testSheet(defaultSheet)
+	onGetSheet(defaultSheet)
 
 	err := defaultSheet.SetCellCR("A", 1, fmt.Sprintf("%s: Hello, A1.", defaultSheet.Name()))
 	require.Error(t, err, "SetCellCR fail:%+v", err)
@@ -137,7 +140,7 @@ func TestReadFile(t *testing.T) {
 		sheetName := fmt.Sprintf("My-Sheet-%d", i)
 		sheet, err := e.Sheet(sheetName)
 		require.NoError(t, err, "Sheet fail:%+v", err)
-		testSheet(sheet)
+		onGetSheet(sheet)
 	}
 }
 
@@ -165,8 +168,8 @@ func TestReadRowCol(t *testing.T) {
 	}
 
 	sheets := e.Sheets()
-	t.Logf("TestReadRowCol: GetRows =================================================")
 	var builder strings.Builder
+	t.Logf("TestReadRowCol: GetRows =================================================")
 	for _, sheet := range sheets {
 		t.Logf("=================================================")
 		rows, errRows := sheet.GetRows()
@@ -203,4 +206,60 @@ func TestReadRowCol(t *testing.T) {
 			t.Log(builder.String())
 		}
 	}
+}
+
+func TestReadWriteFile(t *testing.T) {
+	e, errOpen := excel.OpenFile(testFile, excel.OptFlag(excel.OReadWrite))
+	require.NoError(t, errOpen)
+	require.NotNil(t, e)
+
+	defer func(e excel.Excel) {
+		err := e.Close()
+		require.Nil(t, err)
+	}(e)
+
+	_, errRead := e.Read()
+	require.NoError(t, errRead)
+
+	var builder strings.Builder
+	onGetCells := func(cells []excel.Cell, builder *strings.Builder) {
+		for i, cell := range cells {
+			if i == 0 {
+				builder.WriteString(fmt.Sprintf(" | %s", cell))
+			} else {
+				builder.WriteString(fmt.Sprintf("\t%s", cell))
+			}
+		}
+	}
+	onGetSheet := func(sheet excel.Sheet, msg string) {
+		t.Logf("Sheet:%+v %s ==================================================", sheet.Name(), msg)
+		rows, errRows := sheet.GetRows()
+		require.NoError(t, errRows, "GetRows fail:%+v", errRows)
+		require.NotNil(t, rows)
+		for _, row := range rows {
+			builder.Reset()
+			builder.WriteString(fmt.Sprintf("Sheet:%v", sheet.Name()))
+			builder.WriteString(fmt.Sprintf(" RowId:%v", row.Id()))
+
+			cells, errCells := row.Cells()
+			require.NoError(t, errCells, "Cells fail:%+v", errCells)
+			onGetCells(cells, &builder)
+
+			t.Log(builder.String())
+		}
+	}
+
+	defaultSheet := e.GetActiveSheet()
+	onGetSheet(defaultSheet, "Origin")
+
+	// modify
+	timeNow := time.Now().Local().Format(spstime.FormatYYYYMMDDHHMMSSNsZSNum)
+	newValue := fmt.Sprintf("%s: Hello, A1. at '%s'", defaultSheet.Name(), timeNow)
+	err := defaultSheet.SetCellCR("A", 1, newValue)
+	require.NoError(t, err, "SetCellCR fail:%+v", err)
+	onGetSheet(defaultSheet, "Modified")
+
+	// write to file
+	_, errWrite := e.Write()
+	require.NoError(t, errWrite, "Write fail:%+v", errWrite)
 }
