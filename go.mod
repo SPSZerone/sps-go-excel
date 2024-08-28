@@ -3,7 +3,7 @@ module github.com/SPSZerone/sps-go-excel
 go 1.23.0
 
 require (
-	github.com/SPSZerone/sps-go-zerone v0.0.0-20240827123625-6da37d0adc7f
+	github.com/SPSZerone/sps-go-zerone v0.0.0-20240828003738-82b271b1efbb
 	github.com/stretchr/testify v1.9.0
 	github.com/xuri/excelize/v2 v2.8.1
 )
