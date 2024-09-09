@@ -14,14 +14,14 @@ import (
 var errExcelIsNotWritable = fmt.Errorf("excel is not writable")
 
 func init() {
-	newer := func(options *excel.Options) excel.Excel {
-		return &Excel{options: options}
+	newer := func() excel.Excel {
+		return &Excel{}
 	}
 	excel.RegisterDefaultNewerExcel(newer)
 }
 
 type Excel struct {
-	options *excel.Options
+	options excel.Options
 
 	sheets map[string]excel.Sheet
 	excel  *excelize.File
@@ -29,7 +29,7 @@ type Excel struct {
 
 func (e *Excel) updateOptions(opts ...excel.Option) {
 	for _, o := range opts {
-		o(e.options)
+		o(&e.options)
 	}
 }
 
@@ -83,7 +83,7 @@ func (e *Excel) initFile() error {
 }
 
 func (e *Excel) Options() excel.Options {
-	return *e.options
+	return e.options
 }
 
 func (e *Excel) Close() error {

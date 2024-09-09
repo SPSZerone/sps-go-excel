@@ -5,7 +5,7 @@ import (
 	"io"
 )
 
-type NewerExcel func(options *Options) Excel
+type NewerExcel func() Excel
 
 var defaultNewerExcel NewerExcel
 
@@ -52,8 +52,7 @@ func NewExcel(opts ...Option) (Excel, error) {
 }
 
 func NewExcelCustom(newer NewerExcel, opts ...Option) (Excel, error) {
-	options := newOptions()
-	e := newer(options)
+	e := newer()
 	err := e.Init(opts...)
 	if err != nil {
 		return nil, err

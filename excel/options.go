@@ -16,14 +16,6 @@ const (
 	OExist  // used with OCreate, file must not exist.
 )
 
-func newOptions(opts ...Option) *Options {
-	options := &Options{}
-	for _, option := range opts {
-		option(options)
-	}
-	return options
-}
-
 type Options struct {
 	File string
 	Flag Flag
