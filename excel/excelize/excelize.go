@@ -13,11 +13,8 @@ import (
 
 var errExcelIsNotWritable = fmt.Errorf("excel is not writable")
 
-func init() {
-	newer := func() excel.Excel {
-		return &Excel{}
-	}
-	excel.RegisterDefaultNewerExcel(newer)
+var DefaultNewer = func() excel.Excel {
+	return &Excel{}
 }
 
 type Excel struct {

@@ -19,6 +19,10 @@ const (
 	testFileSheetCount = 3
 )
 
+func init() {
+	excel.RegisterDefaultNewerExcel(DefaultNewer)
+}
+
 func TestNewFile(t *testing.T) {
 	file := "NewFile.xlsx"
 	e, err := excel.NewFile(file)
