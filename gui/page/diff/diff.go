@@ -12,10 +12,7 @@ import (
 	"github.com/SPSZerone/sps-go-zerone/graphics/gio/page"
 )
 
-type (
-	C = layout.Context
-	D = layout.Dimensions
-)
+var _ page.Page = (*Page)(nil)
 
 type Page struct {
 	widget.List
@@ -27,8 +24,6 @@ func New(pages *page.Pages) *Page {
 		Pages: pages,
 	}
 }
-
-var _ page.Page = &Page{}
 
 func (p *Page) Actions() []component.AppBarAction {
 	return []component.AppBarAction{}
@@ -45,9 +40,9 @@ func (p *Page) NavItem() component.NavItem {
 	}
 }
 
-func (p *Page) Layout(gtx C, w *app.Window, th *material.Theme) D {
+func (p *Page) Layout(gtx layout.Context, w *app.Window, th *material.Theme) layout.Dimensions {
 	p.List.Axis = layout.Vertical
-	return material.List(th, &p.List).Layout(gtx, 1, func(gtx C, _ int) D {
+	return material.List(th, &p.List).Layout(gtx, 1, func(gtx layout.Context, _ int) layout.Dimensions {
 		return layout.Flex{
 			Alignment: layout.Middle,
 			Axis:      layout.Vertical,
