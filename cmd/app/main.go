@@ -2,7 +2,6 @@ package main
 
 import (
 	"github.com/SPSZerone/sps-go-zerone/graphics/gio"
-	"github.com/SPSZerone/sps-go-zerone/graphics/gio/page"
 	"github.com/SPSZerone/sps-go-zerone/graphics/gio/page/pref"
 
 	"github.com/SPSZerone/sps-go-excel/gui/page/about"
@@ -18,7 +17,8 @@ func main() {
 		gio.OptOnEnd(func(app *gio.Application) {
 			app.Logger.Info().Msg("SPS Excel Tools End")
 		}),
-		gio.OptRegisterPage(func(pages *page.Pages) {
+		gio.OptOnWindowInit(func(win *gio.Window) {
+			pages := win.Pages
 			pages.Register(0, about.New(pages))
 			pages.Register(1, pref.New(pages))
 			pages.Register(2, diff.New(pages))
