@@ -7,48 +7,35 @@ import (
 	"gioui.org/widget/material"
 	"gioui.org/x/component"
 
-	"github.com/SPSZerone/sps-go-zerone/graphics/gio/icon"
 	spslayout "github.com/SPSZerone/sps-go-zerone/graphics/gio/layout"
-	"github.com/SPSZerone/sps-go-zerone/graphics/gio/page"
 )
 
-var _ page.Page = (*Page)(nil)
-
-type Page struct {
+type Diff struct {
 	widget.List
-	*page.Pages
+
+	fileInput  component.TextField
+	fileButton widget.Clickable
 }
 
-func New(pages *page.Pages) *Page {
-	return &Page{
-		Pages: pages,
-	}
-}
-
-func (p *Page) Actions() []component.AppBarAction {
-	return []component.AppBarAction{}
-}
-
-func (p *Page) Overflow() []component.OverflowAction {
-	return []component.OverflowAction{}
-}
-
-func (p *Page) NavItem() component.NavItem {
-	return component.NavItem{
-		Name: "Diff",
-		Icon: icon.ActionCompareArrows,
-	}
-}
-
-func (p *Page) Layout(gtx layout.Context, w *app.Window, th *material.Theme) layout.Dimensions {
-	p.List.Axis = layout.Vertical
-	return material.List(th, &p.List).Layout(gtx, 1, func(gtx layout.Context, _ int) layout.Dimensions {
-		return layout.Flex{
-			Alignment: layout.Middle,
-			Axis:      layout.Vertical,
-		}.Layout(gtx,
+func (d *Diff) Layout(gtx layout.Context, w *app.Window, th *material.Theme) layout.Dimensions {
+	d.List.Axis = layout.Vertical
+	return material.List(th, &d.List).Layout(gtx, 1, func(gtx layout.Context, _ int) layout.Dimensions {
+		return layout.Flex{Axis: layout.Vertical}.Layout(
+			gtx,
 			layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-				return spslayout.DefaultInset.Layout(gtx, material.Body1(th, `Diff!!`).Layout)
+				return spslayout.FlexInset{
+					Ratio: 0.8,
+					Flex: layout.Flex{
+						Axis:      layout.Horizontal,
+						Alignment: layout.Middle,
+					},
+				}.Layout(
+					gtx,
+					func(gtx layout.Context) layout.Dimensions {
+						return d.fileInput.Layout(gtx, th, "File(xlsx,csv...)")
+					},
+					material.Button(th, &d.fileButton, "Open File").Layout,
+				)
 			}),
 		)
 	})

@@ -22,6 +22,7 @@ func main() {
 			pages.Register(0, about.New(pages))
 			pages.Register(1, pref.New(pages))
 			pages.Register(2, diff.New(pages))
+			pages.SwitchTo(2)
 		}),
 	)
 }
