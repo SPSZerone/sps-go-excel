@@ -7,6 +7,7 @@ import (
 	"gioui.org/widget/material"
 	"gioui.org/x/component"
 
+	"github.com/SPSZerone/sps-go-zerone/graphics/gio"
 	spslayout "github.com/SPSZerone/sps-go-zerone/graphics/gio/layout"
 )
 
@@ -17,7 +18,7 @@ type Diff struct {
 	fileButton widget.Clickable
 }
 
-func (d *Diff) Layout(gtx layout.Context, w *app.Window, th *material.Theme) layout.Dimensions {
+func (d *Diff) Layout(app *gio.Application, gtx layout.Context, w *app.Window, th *material.Theme) layout.Dimensions {
 	d.List.Axis = layout.Vertical
 	return material.List(th, &d.List).Layout(gtx, 1, func(gtx layout.Context, _ int) layout.Dimensions {
 		return layout.Flex{Axis: layout.Vertical}.Layout(
@@ -27,14 +28,20 @@ func (d *Diff) Layout(gtx layout.Context, w *app.Window, th *material.Theme) lay
 					Ratio: 0.8,
 					Flex: layout.Flex{
 						Axis:      layout.Horizontal,
-						Alignment: layout.Middle,
+						Alignment: layout.Baseline,
+						Spacing:   layout.SpaceAround,
 					},
 				}.Layout(
 					gtx,
 					func(gtx layout.Context) layout.Dimensions {
 						return d.fileInput.Layout(gtx, th, "File(xlsx,csv...)")
 					},
-					material.Button(th, &d.fileButton, "Open File").Layout,
+					func(gtx layout.Context) layout.Dimensions {
+						if d.fileButton.Clicked(gtx) {
+							app.Logger.Info().Msg("Open File")
+						}
+						return material.Button(th, &d.fileButton, "Open File").Layout(gtx)
+					},
 				)
 			}),
 		)

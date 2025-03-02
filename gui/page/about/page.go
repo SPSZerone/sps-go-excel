@@ -7,19 +7,19 @@ import (
 	"gioui.org/widget/material"
 	"gioui.org/x/component"
 
+	"github.com/SPSZerone/sps-go-zerone/graphics/gio"
 	"github.com/SPSZerone/sps-go-zerone/graphics/gio/icon"
 	spslayout "github.com/SPSZerone/sps-go-zerone/graphics/gio/layout"
-	"github.com/SPSZerone/sps-go-zerone/graphics/gio/page"
 )
 
-var _ page.Page = (*Page)(nil)
+var _ gio.Page = (*Page)(nil)
 
 type Page struct {
 	widget.List
-	*page.Pages
+	*gio.Pages
 }
 
-func New(pages *page.Pages) *Page {
+func New(pages *gio.Pages) *Page {
 	return &Page{
 		Pages: pages,
 	}
@@ -40,7 +40,7 @@ func (p *Page) NavItem() component.NavItem {
 	}
 }
 
-func (p *Page) Layout(gtx layout.Context, w *app.Window, th *material.Theme) layout.Dimensions {
+func (p *Page) Layout(app *gio.Application, gtx layout.Context, w *app.Window, th *material.Theme) layout.Dimensions {
 	p.List.Axis = layout.Vertical
 	return material.List(th, &p.List).Layout(gtx, 1, func(gtx layout.Context, _ int) layout.Dimensions {
 		return layout.Flex{
