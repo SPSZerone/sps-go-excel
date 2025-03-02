@@ -14,8 +14,9 @@ import (
 type Diff struct {
 	widget.List
 
-	fileInput  component.TextField
-	fileButton widget.Clickable
+	fileInput    component.TextField
+	fileButton   widget.Clickable
+	reloadButton widget.Clickable
 }
 
 func (d *Diff) Layout(app *gio.Application, gtx layout.Context, w *app.Window, th *material.Theme) layout.Dimensions {
@@ -31,18 +32,42 @@ func (d *Diff) Layout(app *gio.Application, gtx layout.Context, w *app.Window, t
 						Alignment: layout.Baseline,
 						Spacing:   layout.SpaceAround,
 					},
-				}.Layout(
+				}.LayoutWidgets(
 					gtx,
-					func(gtx layout.Context) layout.Dimensions {
-						return d.fileInput.Layout(gtx, th, "File(xlsx,csv...)")
-					},
-					func(gtx layout.Context) layout.Dimensions {
-						if d.fileButton.Clicked(gtx) {
-							app.Logger.Info().Msg("Open File")
+					func() (float32, layout.Widget) {
+						return 0.7, func(gtx layout.Context) layout.Dimensions {
+							return d.fileInput.Layout(gtx, th, "File(xlsx,csv...)")
 						}
-						return material.Button(th, &d.fileButton, "Open File").Layout(gtx)
+					},
+					func() (float32, layout.Widget) {
+						return 0.15, func(gtx layout.Context) layout.Dimensions {
+							if d.fileButton.Clicked(gtx) {
+								app.Logger.Info().Msg("Open File")
+							}
+							return material.Button(th, &d.fileButton, "Open File").Layout(gtx)
+						}
+					},
+					func() (float32, layout.Widget) {
+						return 0.15, func(gtx layout.Context) layout.Dimensions {
+							if d.reloadButton.Clicked(gtx) {
+								app.Logger.Info().Msg("Reload")
+							}
+							return material.Button(th, &d.reloadButton, "Reload").Layout(gtx)
+						}
 					},
 				)
+				//}.LayoutABWidget(
+				//	gtx,
+				//	func(gtx layout.Context) layout.Dimensions {
+				//		return d.fileInput.Layout(gtx, th, "File(xlsx,csv...)")
+				//	},
+				//	func(gtx layout.Context) layout.Dimensions {
+				//		if d.fileButton.Clicked(gtx) {
+				//			app.Logger.Info().Msg("Open File")
+				//		}
+				//		return material.Button(th, &d.fileButton, "Open File").Layout(gtx)
+				//	},
+				//)
 			}),
 		)
 	})
