@@ -7,19 +7,19 @@ import (
 	"gioui.org/widget/material"
 	"gioui.org/x/component"
 
-	"github.com/SPSZerone/sps-go-zerone/graphics/gio"
-	"github.com/SPSZerone/sps-go-zerone/graphics/gio/icon"
+	spsgio "github.com/SPSZerone/sps-go-zerone/graphics/gio"
+	spsicon "github.com/SPSZerone/sps-go-zerone/graphics/gio/icon"
 	spslayout "github.com/SPSZerone/sps-go-zerone/graphics/gio/layout"
 )
 
-var _ gio.Page = (*Page)(nil)
+var _ spsgio.Page = (*Page)(nil)
 
 type Page struct {
 	widget.List
-	*gio.Pages
+	*spsgio.Pages
 }
 
-func New(pages *gio.Pages) *Page {
+func New(pages *spsgio.Pages) *Page {
 	return &Page{
 		Pages: pages,
 	}
@@ -36,11 +36,11 @@ func (p *Page) Overflow() []component.OverflowAction {
 func (p *Page) NavItem() component.NavItem {
 	return component.NavItem{
 		Name: "About",
-		Icon: icon.ActionHelp,
+		Icon: spsicon.ActionHelp,
 	}
 }
 
-func (p *Page) Layout(app *gio.Application, gtx layout.Context, w *app.Window, th *material.Theme) layout.Dimensions {
+func (p *Page) Layout(app *spsgio.Application, gtx layout.Context, w *app.Window, th *material.Theme) layout.Dimensions {
 	p.List.Axis = layout.Vertical
 	return material.List(th, &p.List).Layout(gtx, 1, func(gtx layout.Context, _ int) layout.Dimensions {
 		return layout.Flex{
