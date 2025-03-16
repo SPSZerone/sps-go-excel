@@ -4,8 +4,8 @@ import (
 	"github.com/SPSZerone/sps-go-zerone/graphics/gio"
 	"github.com/SPSZerone/sps-go-zerone/graphics/gio/page/pref"
 
-	"github.com/SPSZerone/sps-go-excel/gui/page/about"
-	"github.com/SPSZerone/sps-go-excel/gui/page/diff"
+	"github.com/SPSZerone/sps-go-excel/gui/tab/about"
+	"github.com/SPSZerone/sps-go-excel/gui/tab/diff"
 )
 
 func main() {

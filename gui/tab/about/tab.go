@@ -12,35 +12,35 @@ import (
 	spslayout "github.com/SPSZerone/sps-go-zerone/graphics/gio/layout"
 )
 
-var _ spsgio.Page = (*Page)(nil)
+var _ spsgio.Page = (*Tab)(nil)
 
-type Page struct {
+type Tab struct {
 	widget.List
 	*spsgio.Pages
 }
 
-func New(pages *spsgio.Pages) *Page {
-	return &Page{
+func New(pages *spsgio.Pages) *Tab {
+	return &Tab{
 		Pages: pages,
 	}
 }
 
-func (p *Page) Actions() []component.AppBarAction {
+func (p *Tab) Actions() []component.AppBarAction {
 	return []component.AppBarAction{}
 }
 
-func (p *Page) Overflow() []component.OverflowAction {
+func (p *Tab) Overflow() []component.OverflowAction {
 	return []component.OverflowAction{}
 }
 
-func (p *Page) NavItem() component.NavItem {
+func (p *Tab) NavItem() component.NavItem {
 	return component.NavItem{
 		Name: "About",
 		Icon: spsicon.ActionHelp,
 	}
 }
 
-func (p *Page) Layout(app *spsgio.Application, gtx layout.Context, w *app.Window, th *material.Theme) layout.Dimensions {
+func (p *Tab) Layout(app *spsgio.Application, gtx layout.Context, w *app.Window, th *material.Theme) layout.Dimensions {
 	p.List.Axis = layout.Vertical
 	return material.List(th, &p.List).Layout(gtx, 1, func(gtx layout.Context, _ int) layout.Dimensions {
 		return layout.Flex{
