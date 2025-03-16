@@ -15,7 +15,7 @@ func Run() {
 			app.Logger.Info().Msg("SPS Excel Tools Init")
 			app.Tabs.Register(0, about.New(&app.Tabs))
 			app.Tabs.Register(1, spspref.New(&app.Tabs))
-			app.Tabs.Register(2, diff.New(&app.Tabs))
+			app.Tabs.Register(2, diff.New(app))
 			app.Tabs.SwitchTo(2)
 		}),
 		spsgio.OptOnStart(func(app *spsgio.Application) {

@@ -24,24 +24,24 @@ func New(tabs *spsgio.Tabs) *Tab {
 	}
 }
 
-func (p *Tab) Actions() []component.AppBarAction {
+func (t *Tab) Actions() []component.AppBarAction {
 	return []component.AppBarAction{}
 }
 
-func (p *Tab) Overflow() []component.OverflowAction {
+func (t *Tab) Overflow() []component.OverflowAction {
 	return []component.OverflowAction{}
 }
 
-func (p *Tab) NavItem() component.NavItem {
+func (t *Tab) NavItem() component.NavItem {
 	return component.NavItem{
 		Name: "About",
 		Icon: spsicon.ActionHelp,
 	}
 }
 
-func (p *Tab) Layout(app *spsgio.Application, gtx layout.Context) layout.Dimensions {
-	p.List.Axis = layout.Vertical
-	return material.List(app.Theme, &p.List).Layout(gtx, 1, func(gtx layout.Context, _ int) layout.Dimensions {
+func (t *Tab) Layout(app *spsgio.Application, gtx layout.Context) layout.Dimensions {
+	t.List.Axis = layout.Vertical
+	return material.List(app.Theme, &t.List).Layout(gtx, 1, func(gtx layout.Context, _ int) layout.Dimensions {
 		return layout.Flex{
 			Alignment: layout.Middle,
 			Axis:      layout.Vertical,

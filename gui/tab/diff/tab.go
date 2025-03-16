@@ -5,6 +5,7 @@ import (
 	"gioui.org/widget"
 	"gioui.org/widget/material"
 	"gioui.org/x/component"
+	"gioui.org/x/explorer"
 
 	spsgio "github.com/SPSZerone/sps-go-zerone/graphics/gio"
 	spsicon "github.com/SPSZerone/sps-go-zerone/graphics/gio/icon"
@@ -22,10 +23,13 @@ type Tab struct {
 	right Diff
 }
 
-func New(tabs *spsgio.Tabs) *Tab {
-	return &Tab{
-		Tabs: tabs,
+func New(app *spsgio.Application) *Tab {
+	t := &Tab{
+		Tabs: &app.Tabs,
 	}
+	t.left.explorer = explorer.NewExplorer(app.Window)
+	t.right.explorer = explorer.NewExplorer(app.Window)
+	return t
 }
 
 func (p *Tab) Actions() []component.AppBarAction {

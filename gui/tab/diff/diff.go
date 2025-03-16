@@ -6,6 +6,7 @@ import (
 	"gioui.org/widget"
 	"gioui.org/widget/material"
 	"gioui.org/x/component"
+	"gioui.org/x/explorer"
 
 	spsgio "github.com/SPSZerone/sps-go-zerone/graphics/gio"
 	spsicon "github.com/SPSZerone/sps-go-zerone/graphics/gio/icon"
@@ -17,6 +18,7 @@ type Diff struct {
 	fileInput    component.TextField
 	fileButton   widget.Clickable
 	reloadButton widget.Clickable
+	explorer     *explorer.Explorer
 }
 
 func (d *Diff) Layout(app *spsgio.Application, gtx layout.Context, w *app.Window, th *material.Theme) layout.Dimensions {
