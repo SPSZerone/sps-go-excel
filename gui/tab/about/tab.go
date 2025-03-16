@@ -1,7 +1,6 @@
 package about
 
 import (
-	"gioui.org/app"
 	"gioui.org/layout"
 	"gioui.org/widget"
 	"gioui.org/widget/material"
@@ -12,16 +11,16 @@ import (
 	spslayout "github.com/SPSZerone/sps-go-zerone/graphics/gio/layout"
 )
 
-var _ spsgio.Page = (*Tab)(nil)
+var _ spsgio.Tab = (*Tab)(nil)
 
 type Tab struct {
 	widget.List
-	*spsgio.Pages
+	*spsgio.Tabs
 }
 
-func New(pages *spsgio.Pages) *Tab {
+func New(tabs *spsgio.Tabs) *Tab {
 	return &Tab{
-		Pages: pages,
+		Tabs: tabs,
 	}
 }
 
@@ -40,15 +39,15 @@ func (p *Tab) NavItem() component.NavItem {
 	}
 }
 
-func (p *Tab) Layout(app *spsgio.Application, gtx layout.Context, w *app.Window, th *material.Theme) layout.Dimensions {
+func (p *Tab) Layout(app *spsgio.Application, gtx layout.Context) layout.Dimensions {
 	p.List.Axis = layout.Vertical
-	return material.List(th, &p.List).Layout(gtx, 1, func(gtx layout.Context, _ int) layout.Dimensions {
+	return material.List(app.Theme, &p.List).Layout(gtx, 1, func(gtx layout.Context, _ int) layout.Dimensions {
 		return layout.Flex{
 			Alignment: layout.Middle,
 			Axis:      layout.Vertical,
 		}.Layout(gtx,
 			layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-				return spslayout.DefaultInset.Layout(gtx, material.Body1(th, `SPS Excel Tools`).Layout)
+				return spslayout.DefaultInset.Layout(gtx, material.Body1(app.Theme, `SPS Excel Tools`).Layout)
 			}),
 		)
 	})

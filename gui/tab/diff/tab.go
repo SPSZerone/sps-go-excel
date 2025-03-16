@@ -1,7 +1,6 @@
 package diff
 
 import (
-	"gioui.org/app"
 	"gioui.org/layout"
 	"gioui.org/widget"
 	"gioui.org/widget/material"
@@ -12,20 +11,20 @@ import (
 	spslayout "github.com/SPSZerone/sps-go-zerone/graphics/gio/layout"
 )
 
-var _ spsgio.Page = (*Tab)(nil)
+var _ spsgio.Tab = (*Tab)(nil)
 
 type Tab struct {
 	widget.List
-	*spsgio.Pages
+	*spsgio.Tabs
 
 	split spslayout.Split
 	left  Diff
 	right Diff
 }
 
-func New(pages *spsgio.Pages) *Tab {
+func New(tabs *spsgio.Tabs) *Tab {
 	return &Tab{
-		Pages: pages,
+		Tabs: tabs,
 	}
 }
 
@@ -44,9 +43,9 @@ func (p *Tab) NavItem() component.NavItem {
 	}
 }
 
-func (p *Tab) Layout(app *spsgio.Application, gtx layout.Context, w *app.Window, th *material.Theme) layout.Dimensions {
+func (p *Tab) Layout(app *spsgio.Application, gtx layout.Context) layout.Dimensions {
 	p.List.Axis = layout.Vertical
-	return material.List(th, &p.List).Layout(gtx, 1, func(gtx layout.Context, _ int) layout.Dimensions {
+	return material.List(app.Theme, &p.List).Layout(gtx, 1, func(gtx layout.Context, _ int) layout.Dimensions {
 		return layout.Flex{
 			Alignment: layout.Middle,
 			Axis:      layout.Vertical,
@@ -55,10 +54,10 @@ func (p *Tab) Layout(app *spsgio.Application, gtx layout.Context, w *app.Window,
 				return p.split.Layout(
 					gtx,
 					func(gtx layout.Context) layout.Dimensions {
-						return p.left.Layout(app, gtx, w, th)
+						return p.left.Layout(app, gtx, app.Window, app.Theme)
 					},
 					func(gtx layout.Context) layout.Dimensions {
-						return p.right.Layout(app, gtx, w, th)
+						return p.right.Layout(app, gtx, app.Window, app.Theme)
 					},
 				)
 			}),
