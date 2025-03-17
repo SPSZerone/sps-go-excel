@@ -1,6 +1,9 @@
 package gui
 
 import (
+	"gioui.org/app"
+	"gioui.org/io/event"
+
 	spsgio "github.com/SPSZerone/sps-go-zerone/graphics/gio"
 	spspref "github.com/SPSZerone/sps-go-zerone/graphics/gio/tab/pref"
 
@@ -28,12 +31,37 @@ func Run() {
 	)
 }
 
-func onLoop(app *spsgio.Application) error {
-	app.Logger.Info().Msg("SPS Excel Tools Loop")
+func onLoop(a *spsgio.Application) error {
+	a.Logger.Info().Msg("SPS Excel Tools Loop")
+
+	chanEvent := make(chan event.Event)
+	chanEventDone := make(chan struct{})
+
+	a.GoRun(func() {
+		for {
+			evt := a.Window.Event()
+			chanEvent <- evt
+			<-chanEventDone
+			if _, ok := evt.(app.DestroyEvent); ok {
+				a.Logger.Info().Msg("Window.Event app.DestroyEvent ...")
+				return
+			}
+		}
+	})
+
 	for {
-		destroy, err := app.OnEvent(app.Window.Event())
-		if destroy {
-			return err
+		select {
+		case evt := <-chanEvent:
+			switch e := evt.(type) {
+			case app.DestroyEvent:
+				a.Logger.Info().Msg("chanEvent app.DestroyEvent ...")
+				chanEventDone <- struct{}{}
+				return e.Err
+			case app.FrameEvent:
+				a.OnFrameEvent(e)
+			}
+
+			chanEventDone <- struct{}{}
 		}
 	}
 }
