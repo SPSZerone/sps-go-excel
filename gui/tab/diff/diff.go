@@ -80,18 +80,11 @@ func (d *Diff) OpenFile(app *spsgio.Application) {
 
 	app.Logger.Info().Msg("Open File")
 
-	ex, err := spsexcel.OpenReader(file, spsexcel.OptFlag(spsexcel.OReadWrite|spsexcel.OCreate))
+	ex, err := spsexcel.OpenReader(file, spsexcel.OptFlag(spsexcel.OReadWrite))
 	if err != nil {
 		app.Logger.Error().Msgf("excel.OpenReader err:%v", err)
 		return
 	}
-
-	bytes, err := ex.Read()
-	if err != nil {
-		app.Logger.Error().Msgf("ex.Read err:%v", err)
-		return
-	}
-	app.Logger.Info().Msgf("bytes:%d", bytes)
 
 	d.excel = ex
 	d.excelRefresh.Store(true)
@@ -101,7 +94,6 @@ func (d *Diff) LayoutExcel(app *spsgio.Application, gtx layout.Context, param an
 	if d.excelRefresh.Load() {
 		d.excelRefresh.Store(false)
 
-		// TODO test
 		onGetCells := func(cells []spsexcel.Cell, builder *strings.Builder) {
 			for i, cell := range cells {
 				if i == 0 {
@@ -112,19 +104,7 @@ func (d *Diff) LayoutExcel(app *spsgio.Application, gtx layout.Context, param an
 			}
 		}
 
-		onGetSheet := func(sheet spsexcel.Sheet) {
-			app.Logger.Info().Msgf("Sheet:%+v ==================================================", sheet.Name())
-			cell, err := sheet.GetCellCR("A", 1)
-			app.Logger.Info().Msgf("%s", cell)
-			cell, err = sheet.GetCellCR("B", 2)
-			app.Logger.Info().Msgf("%s", cell)
-			cell, err = sheet.GetCellCR("C", 3)
-			app.Logger.Info().Msgf("%s", cell)
-			_ = err
-		}
 		sheet := d.excel.GetActiveSheet()
-		onGetSheet(sheet)
-
 		rows, _ := sheet.GetRows()
 		var builder strings.Builder
 		for _, row := range rows {
@@ -138,5 +118,5 @@ func (d *Diff) LayoutExcel(app *spsgio.Application, gtx layout.Context, param an
 			app.Logger.Info().Msg(builder.String())
 		}
 	}
-	return material.H6(app.Theme, "aaaaaaaaa").Layout(gtx)
+	return material.H6(app.Theme, "TODO...").Layout(gtx)
 }
