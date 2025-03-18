@@ -69,11 +69,19 @@ func (e *Excel) initFile() error {
 		}
 		e.excel = excelize.NewFile()
 	} else {
-		excelFile, err := excelize.OpenFile(file)
-		if err != nil {
-			return err
+		if e.options.Reader != nil {
+			excelFile, err := excelize.OpenReader(e.options.Reader)
+			if err != nil {
+				return err
+			}
+			e.excel = excelFile
+		} else {
+			excelFile, err := excelize.OpenFile(file)
+			if err != nil {
+				return err
+			}
+			e.excel = excelFile
 		}
-		e.excel = excelFile
 	}
 
 	return nil

@@ -1,6 +1,7 @@
 package diff
 
 import (
+	"gioui.org/io/event"
 	"gioui.org/layout"
 	"gioui.org/widget"
 	"gioui.org/widget/material"
@@ -32,36 +33,45 @@ func New(app *spsgio.Application) *Tab {
 	return t
 }
 
-func (p *Tab) Actions() []component.AppBarAction {
+func (t *Tab) Actions() []component.AppBarAction {
 	return []component.AppBarAction{}
 }
 
-func (p *Tab) Overflow() []component.OverflowAction {
+func (t *Tab) Overflow() []component.OverflowAction {
 	return []component.OverflowAction{}
 }
 
-func (p *Tab) NavItem() component.NavItem {
+func (t *Tab) NavItem() component.NavItem {
 	return component.NavItem{
 		Name: "Diff",
 		Icon: spsicon.ActionCompareArrows,
 	}
 }
 
-func (p *Tab) Layout(app *spsgio.Application, gtx layout.Context) layout.Dimensions {
-	p.List.Axis = layout.Vertical
-	return material.List(app.Theme, &p.List).Layout(gtx, 1, func(gtx layout.Context, _ int) layout.Dimensions {
+func (t *Tab) OnEventPre(app *spsgio.Application, evt event.Event, param any) {
+	t.left.explorer.ListenEvents(evt)
+	t.right.explorer.ListenEvents(evt)
+}
+
+func (t *Tab) OnEventPost(app *spsgio.Application, evt event.Event, param any) {
+
+}
+
+func (t *Tab) Layout(app *spsgio.Application, gtx layout.Context, param any) layout.Dimensions {
+	t.List.Axis = layout.Vertical
+	return material.List(app.Theme, &t.List).Layout(gtx, 1, func(gtx layout.Context, _ int) layout.Dimensions {
 		return layout.Flex{
 			Alignment: layout.Middle,
 			Axis:      layout.Vertical,
 		}.Layout(gtx,
 			layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-				return p.split.Layout(
+				return t.split.Layout(
 					gtx,
 					func(gtx layout.Context) layout.Dimensions {
-						return p.left.Layout(app, gtx, app.Window, app.Theme)
+						return t.left.Layout(app, gtx, param)
 					},
 					func(gtx layout.Context) layout.Dimensions {
-						return p.right.Layout(app, gtx, app.Window, app.Theme)
+						return t.right.Layout(app, gtx, param)
 					},
 				)
 			}),

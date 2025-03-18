@@ -257,7 +257,7 @@ func TestReadWriteFile(t *testing.T) {
 	onGetSheet(defaultSheet, "Origin")
 
 	// modify
-	timeNow := time.Now().Local().Format(spstime.FormatYYYYMMDDHHMMSSNsZSNum)
+	timeNow := time.Now().Local().Format(spstime.FormatYYYYMMDDHHMMSSMCsZName)
 	newValue := fmt.Sprintf("%s: Hello, A1. at '%s'", defaultSheet.Name(), timeNow)
 	err := defaultSheet.SetCellCR("A", 1, newValue)
 	require.NoError(t, err, "SetCellCR fail:%+v", err)

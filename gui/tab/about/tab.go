@@ -1,6 +1,7 @@
 package about
 
 import (
+	"gioui.org/io/event"
 	"gioui.org/layout"
 	"gioui.org/widget"
 	"gioui.org/widget/material"
@@ -39,7 +40,15 @@ func (t *Tab) NavItem() component.NavItem {
 	}
 }
 
-func (t *Tab) Layout(app *spsgio.Application, gtx layout.Context) layout.Dimensions {
+func (t *Tab) OnEventPre(app *spsgio.Application, evt event.Event, param any) {
+
+}
+
+func (t *Tab) OnEventPost(app *spsgio.Application, evt event.Event, param any) {
+
+}
+
+func (t *Tab) Layout(app *spsgio.Application, gtx layout.Context, param any) layout.Dimensions {
 	t.List.Axis = layout.Vertical
 	return material.List(app.Theme, &t.List).Layout(gtx, 1, func(gtx layout.Context, _ int) layout.Dimensions {
 		return layout.Flex{

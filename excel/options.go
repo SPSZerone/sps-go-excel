@@ -1,5 +1,7 @@
 package excel
 
+import "io"
+
 type Option func(*Options)
 type Flag uint32
 
@@ -17,8 +19,9 @@ const (
 )
 
 type Options struct {
-	File string
-	Flag Flag
+	File   string
+	Flag   Flag
+	Reader io.Reader
 }
 
 func OptFile(value string) Option {
@@ -30,6 +33,12 @@ func OptFile(value string) Option {
 func OptFlag(value Flag) Option {
 	return func(c *Options) {
 		c.Flag = value
+	}
+}
+
+func OptReader(value io.Reader) Option {
+	return func(c *Options) {
+		c.Reader = value
 	}
 }
 

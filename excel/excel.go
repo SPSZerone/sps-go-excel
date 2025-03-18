@@ -37,6 +37,17 @@ func OpenFile(file string, opts ...Option) (Excel, error) {
 	return e, nil
 }
 
+func OpenReader(reader io.Reader, opts ...Option) (Excel, error) {
+	options := make([]Option, 0)
+	options = append(options, OptReader(reader), OptFlag(OReadWrite))
+	options = append(options, opts...)
+	e, err := NewExcel(options...)
+	if err != nil {
+		return nil, err
+	}
+	return e, nil
+}
+
 func NewFile(file string, opts ...Option) (Excel, error) {
 	options := make([]Option, 0)
 	options = append(options, OptFile(file), OptFlag(OReadWrite|OCreate|OExist))
