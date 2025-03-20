@@ -15,18 +15,18 @@ import (
 
 func New(app *spsgio.Application) *Page {
 	t := &Page{
-		Tabs: &app.Tabs,
+		Pages: &app.Pages,
 	}
 	t.left.explorer = explorer.NewExplorer(app.Window)
 	t.right.explorer = explorer.NewExplorer(app.Window)
 	return t
 }
 
-var _ spsgio.Tab = (*Page)(nil)
+var _ spsgio.Page = (*Page)(nil)
 
 type Page struct {
 	widget.List
-	*spsgio.Tabs
+	*spsgio.Pages
 
 	split spslayout.Split
 	left  Diff

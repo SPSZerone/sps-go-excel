@@ -2,7 +2,7 @@ package gui
 
 import (
 	spsgio "github.com/SPSZerone/sps-go-zerone/graphics/gio"
-	spspref "github.com/SPSZerone/sps-go-zerone/graphics/gio/tab/pref"
+	spspref "github.com/SPSZerone/sps-go-zerone/graphics/gio/page/pref"
 
 	"github.com/SPSZerone/sps-go-excel/excel"
 	"github.com/SPSZerone/sps-go-excel/excel/excelize"
@@ -20,10 +20,10 @@ func Run() {
 		spsgio.OptLoopMode(spsgio.LoopModeSimple),
 		spsgio.OptOnInit(func(app *spsgio.Application) {
 			app.Logger.Info().Msg("SPS Excel Tools Init")
-			app.Tabs.Register(0, about.New(&app.Tabs))
-			app.Tabs.Register(1, spspref.New(&app.Tabs))
-			app.Tabs.Register(2, diff.New(app))
-			app.Tabs.SwitchTo(2)
+			app.Register(0, about.New(app))
+			app.Register(1, spspref.New(app))
+			app.Register(2, diff.New(app))
+			app.SwitchTo(2)
 		}),
 		spsgio.OptOnStart(func(app *spsgio.Application) {
 			app.Logger.Info().Msg("SPS Excel Tools Start")

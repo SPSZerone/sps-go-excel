@@ -12,17 +12,17 @@ import (
 	spslayout "github.com/SPSZerone/sps-go-zerone/graphics/gio/layout"
 )
 
-func New(pages *spsgio.Tabs) *Page {
+func New(app *spsgio.Application) *Page {
 	return &Page{
-		Tabs: pages,
+		Pages: &app.Pages,
 	}
 }
 
-var _ spsgio.Tab = (*Page)(nil)
+var _ spsgio.Page = (*Page)(nil)
 
 type Page struct {
 	widget.List
-	*spsgio.Tabs
+	*spsgio.Pages
 }
 
 func (p *Page) Actions() []component.AppBarAction {
