@@ -6,8 +6,8 @@ import (
 
 	"github.com/SPSZerone/sps-go-excel/excel"
 	"github.com/SPSZerone/sps-go-excel/excel/excelize"
-	"github.com/SPSZerone/sps-go-excel/gui/tab/about"
-	"github.com/SPSZerone/sps-go-excel/gui/tab/diff"
+	"github.com/SPSZerone/sps-go-excel/gui/page/about"
+	"github.com/SPSZerone/sps-go-excel/gui/page/diff"
 )
 
 func init() {

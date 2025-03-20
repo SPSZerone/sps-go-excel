@@ -12,45 +12,45 @@ import (
 	spslayout "github.com/SPSZerone/sps-go-zerone/graphics/gio/layout"
 )
 
-var _ spsgio.Tab = (*Tab)(nil)
+func New(pages *spsgio.Tabs) *Page {
+	return &Page{
+		Tabs: pages,
+	}
+}
 
-type Tab struct {
+var _ spsgio.Tab = (*Page)(nil)
+
+type Page struct {
 	widget.List
 	*spsgio.Tabs
 }
 
-func New(tabs *spsgio.Tabs) *Tab {
-	return &Tab{
-		Tabs: tabs,
-	}
-}
-
-func (t *Tab) Actions() []component.AppBarAction {
+func (p *Page) Actions() []component.AppBarAction {
 	return []component.AppBarAction{}
 }
 
-func (t *Tab) Overflow() []component.OverflowAction {
+func (p *Page) Overflow() []component.OverflowAction {
 	return []component.OverflowAction{}
 }
 
-func (t *Tab) NavItem() component.NavItem {
+func (p *Page) NavItem() component.NavItem {
 	return component.NavItem{
 		Name: "About",
 		Icon: spsicon.ActionHelp,
 	}
 }
 
-func (t *Tab) OnEventPre(app *spsgio.Application, evt event.Event, param any) {
+func (p *Page) OnEventPre(app *spsgio.Application, evt event.Event, param any) {
 
 }
 
-func (t *Tab) OnEventPost(app *spsgio.Application, evt event.Event, param any) {
+func (p *Page) OnEventPost(app *spsgio.Application, evt event.Event, param any) {
 
 }
 
-func (t *Tab) Layout(app *spsgio.Application, gtx layout.Context, param any) layout.Dimensions {
-	t.List.Axis = layout.Vertical
-	return material.List(app.Theme, &t.List).Layout(gtx, 1, func(gtx layout.Context, _ int) layout.Dimensions {
+func (p *Page) Layout(app *spsgio.Application, gtx layout.Context, param any) layout.Dimensions {
+	p.List.Axis = layout.Vertical
+	return material.List(app.Theme, &p.List).Layout(gtx, 1, func(gtx layout.Context, _ int) layout.Dimensions {
 		return layout.Flex{
 			Alignment: layout.Middle,
 			Axis:      layout.Vertical,
