@@ -18,15 +18,19 @@ func Run() {
 	spsgio.Run(
 		spsgio.OptTitle("SPS Excel Tools"),
 		spsgio.OptLoopMode(spsgio.LoopModeSimple),
-		spsgio.OptOnInit(func(app *spsgio.Application) {
-			app.Logger.Info().Msg("SPS Excel Tools Init")
-			app.Register(0, about.New(app))
-			app.Register(1, spspref.New(app))
-			app.Register(2, diff.New(app))
-			app.SwitchTo(2)
+		spsgio.OptOnInitPre(func(app *spsgio.Application) {
+			app.Logger.Info().Msg("SPS Excel Tools InitPre")
+			app.Pref.Settings.NonModalDrawer = true
+		}),
+		spsgio.OptOnInitPost(func(app *spsgio.Application) {
+			app.Logger.Info().Msg("SPS Excel Tools InitPost")
+			app.PageRegister(0, about.New(app))
+			app.PageRegister(1, spspref.New(app))
+			app.PageRegister(2, diff.New(app))
 		}),
 		spsgio.OptOnStart(func(app *spsgio.Application) {
 			app.Logger.Info().Msg("SPS Excel Tools Start")
+			app.PageStart(2)
 		}),
 		spsgio.OptOnStop(func(app *spsgio.Application) {
 			app.Logger.Info().Msg("SPS Excel Tools Stop")
