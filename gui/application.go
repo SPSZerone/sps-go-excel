@@ -24,9 +24,17 @@ func Run() {
 		}),
 		spsgio.OptOnInitPost(func(app *spsgio.Application) {
 			app.Logger.Info().Msg("SPS Excel Tools InitPost")
-			app.PageRegister(0, about.New(app))
-			app.PageRegister(1, spspref.New(app))
-			app.PageRegister(2, diff.New(app))
+
+			pageTag := 0
+			app.PageRegister(pageTag, about.New(app))
+
+			pageTag++
+			pref := spspref.New(app)
+			pref.Tabs.SetSelected(spspref.TabIdxSettings)
+			app.PageRegister(pageTag, pref)
+
+			pageTag++
+			app.PageRegister(pageTag, diff.New(app))
 		}),
 		spsgio.OptOnStart(func(app *spsgio.Application) {
 			app.Logger.Info().Msg("SPS Excel Tools Start")
