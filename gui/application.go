@@ -1,6 +1,8 @@
 package gui
 
 import (
+	"gioui.org/io/system"
+
 	spsgio "github.com/SPSZerone/sps-go-zerone/graphics/gio"
 	spspref "github.com/SPSZerone/sps-go-zerone/graphics/gio/page/pref"
 
@@ -17,6 +19,7 @@ func init() {
 func Run() {
 	spsgio.Run(
 		spsgio.OptTitle("SPS Excel Tools"),
+		spsgio.OptStartAction(system.ActionMaximize),
 		spsgio.OptLoopMode(spsgio.LoopModeSimple),
 		spsgio.OptOnInitPre(func(app *spsgio.Application) {
 			app.Logger.Info().Msg("SPS Excel Tools InitPre")
