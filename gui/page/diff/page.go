@@ -8,25 +8,25 @@ import (
 	"gioui.org/x/component"
 	"gioui.org/x/explorer"
 
-	spsgio "github.com/SPSZerone/sps-go-zerone/graphics/gio"
 	spsicon "github.com/SPSZerone/sps-go-zerone/graphics/gio/icon"
 	spslayout "github.com/SPSZerone/sps-go-zerone/graphics/gio/layout"
+	spswin "github.com/SPSZerone/sps-go-zerone/graphics/gio/window"
 )
 
-func New(app *spsgio.Application) *Page {
+func New(pages *spswin.Pages) *Page {
 	t := &Page{
-		Pages: &app.Pages,
+		Pages: pages,
 	}
-	t.left.explorer = explorer.NewExplorer(app.Window)
-	t.right.explorer = explorer.NewExplorer(app.Window)
+	t.left.explorer = explorer.NewExplorer(pages.Window.Window)
+	t.right.explorer = explorer.NewExplorer(pages.Window.Window)
 	return t
 }
 
-var _ spsgio.Page = (*Page)(nil)
+var _ spswin.Page = (*Page)(nil)
 
 type Page struct {
 	widget.List
-	*spsgio.Pages
+	*spswin.Pages
 
 	split spslayout.Split
 	left  Diff
@@ -48,18 +48,18 @@ func (p *Page) NavItem() component.NavItem {
 	}
 }
 
-func (p *Page) OnEventPre(app *spsgio.Application, evt event.Event, param any) {
+func (p *Page) OnEventPre(win *spswin.Window, evt event.Event, param any) {
 	p.left.explorer.ListenEvents(evt)
 	p.right.explorer.ListenEvents(evt)
 }
 
-func (p *Page) OnEventPost(app *spsgio.Application, evt event.Event, param any) {
+func (p *Page) OnEventPost(win *spswin.Window, evt event.Event, param any) {
 
 }
 
-func (p *Page) Layout(app *spsgio.Application, gtx layout.Context, param any) layout.Dimensions {
+func (p *Page) Layout(win *spswin.Window, gtx layout.Context, param any) layout.Dimensions {
 	p.List.Axis = layout.Vertical
-	return material.List(app.Theme, &p.List).Layout(gtx, 1, func(gtx layout.Context, _ int) layout.Dimensions {
+	return material.List(win.Theme, &p.List).Layout(gtx, 1, func(gtx layout.Context, _ int) layout.Dimensions {
 		return layout.Flex{
 			Alignment: layout.Middle,
 			Axis:      layout.Vertical,
@@ -68,10 +68,10 @@ func (p *Page) Layout(app *spsgio.Application, gtx layout.Context, param any) la
 				return p.split.Layout(
 					gtx,
 					func(gtx layout.Context) layout.Dimensions {
-						return p.left.Layout(app, gtx, param)
+						return p.left.Layout(win, gtx, param)
 					},
 					func(gtx layout.Context) layout.Dimensions {
-						return p.right.Layout(app, gtx, param)
+						return p.right.Layout(win, gtx, param)
 					},
 				)
 			}),
