@@ -60,6 +60,3 @@ func Run() {
 		),
 	)
 }
-
-type Application struct {
-}
