@@ -4,6 +4,7 @@ import (
 	"gioui.org/io/system"
 
 	spsgio "github.com/SPSZerone/sps-go-zerone/graphics/gio"
+	spsapp "github.com/SPSZerone/sps-go-zerone/graphics/gio/app"
 	spspref "github.com/SPSZerone/sps-go-zerone/graphics/gio/page/pref"
 	spswin "github.com/SPSZerone/sps-go-zerone/graphics/gio/window"
 
@@ -17,46 +18,61 @@ func init() {
 	excel.RegisterDefaultNewerExcel(excelize.DefaultNewer)
 }
 
+const (
+	Name = "SPS Excel Tools"
+)
+
 func Run() {
-	spsgio.Run(
-		spsgio.OptOnCreate(func(app *spsgio.App) {
-			app.Logger.Info().Msg("Window SPS Excel Tools Create")
+	spsapp.Run(
+		NewWindow,
+		spsapp.OptOnCreate(func(app *spsapp.App) {
+			app.Logger.Info().Msgf("Window %s Create", Name)
 		}),
-		spsgio.OptOnStart(func(app *spsgio.App) {
-			app.Logger.Info().Msg("Window SPS Excel Tools Start")
+		spsapp.OptOnStart(func(app *spsapp.App) {
+			app.Logger.Info().Msgf("Window %s Start", Name)
 		}),
-		spsgio.OptOnStop(func(app *spsgio.App) {
-			app.Logger.Info().Msg("Window SPS Excel Tools Stop")
+		spsapp.OptOnStop(func(app *spsapp.App) {
+			app.Logger.Info().Msgf("Window %s Stop", Name)
 		}),
-		spsgio.OptWinOpts(
-			spswin.OptTitle("SPS Excel Tools"),
-			spswin.OptStartAction(system.ActionMaximize),
-			spswin.OptLoopMode(spswin.LoopModeSimple),
-			spswin.OptOnInitPre(func(win *spswin.Window) {
-				win.Logger.Info().Msgf("%s InitPre", win.LogPrefix())
-			}),
-			spswin.OptOnInitPost(func(win *spswin.Window) {
-				win.Logger.Info().Msgf("%s InitPost", win.LogPrefix())
+	)
+}
 
-				pages := &win.Pages
-				pageTag := 0
-				pages.Register(pageTag, diff.New(pages))
+func NewWindow(app spsgio.App, fromWin spsgio.Window) spsgio.Window {
+	pref := app.GetPref()
+	if fromWin != nil {
+		pref = fromWin.GetPref()
+	}
+	return spswin.NewWindow(
+		app.GetContext(),
+		spswin.OptID("Main"),
+		spswin.OptTitle(Name),
+		spswin.OptPref(*pref),
+		spswin.OptStartAction(system.ActionMaximize),
+		spswin.OptLoopMode(spswin.LoopModeSimple),
+		spswin.OptOnInitPre(func(win *spswin.Window) {
+			win.Logger.Info().Msgf("%s InitPre", win.LogPrefix())
+		}),
+		spswin.OptOnInitPost(func(win *spswin.Window) {
+			win.Logger.Info().Msgf("%s InitPost", win.LogPrefix())
 
-				pageTag++
-				pages.Register(pageTag, about.New(pages))
+			pages := &win.Pages
+			pageTag := 0
+			pages.Register(pageTag, diff.New(pages))
 
-				pageTag++
-				pref := spspref.New(pages)
-				pref.Tabs.SetSelected(spspref.TabIdxSettings)
-				pages.Register(pageTag, pref)
-			}),
-			spswin.OptOnStart(func(win *spswin.Window) {
-				win.Logger.Info().Msgf("%s Start", win.LogPrefix())
-				win.Pages.Start(0)
-			}),
-			spswin.OptOnStop(func(win *spswin.Window) {
-				win.Logger.Info().Msgf("%s Stop", win.LogPrefix())
-			}),
-		),
+			pageTag++
+			pages.Register(pageTag, about.New(pages))
+
+			pageTag++
+			prefPage := spspref.New(pages, app, NewWindow)
+			prefPage.Tabs.SetSelected(spspref.TabIdxSettings)
+			pages.Register(pageTag, prefPage)
+		}),
+		spswin.OptOnStart(func(win *spswin.Window) {
+			win.Logger.Info().Msgf("%s Start", win.LogPrefix())
+			win.Pages.Start(0)
+		}),
+		spswin.OptOnStop(func(win *spswin.Window) {
+			win.Logger.Info().Msgf("%s Stop", win.LogPrefix())
+		}),
 	)
 }

@@ -6,6 +6,7 @@ import (
 	"gioui.org/widget"
 	"gioui.org/widget/material"
 	"gioui.org/x/component"
+	spsgio "github.com/SPSZerone/sps-go-zerone/graphics/gio"
 
 	spsicon "github.com/SPSZerone/sps-go-zerone/graphics/gio/icon"
 	spslayout "github.com/SPSZerone/sps-go-zerone/graphics/gio/layout"
@@ -18,7 +19,7 @@ func New(pages *spswin.Pages) *Page {
 	}
 }
 
-var _ spswin.Page = (*Page)(nil)
+var _ spsgio.Page = (*Page)(nil)
 
 type Page struct {
 	widget.List
@@ -40,23 +41,24 @@ func (p *Page) NavItem() component.NavItem {
 	}
 }
 
-func (p *Page) OnEventPre(win *spswin.Window, evt event.Event, param any) {
+func (p *Page) OnEventPre(win spsgio.Window, evt event.Event, param any) {
 
 }
 
-func (p *Page) OnEventPost(win *spswin.Window, evt event.Event, param any) {
+func (p *Page) OnEventPost(win spsgio.Window, evt event.Event, param any) {
 
 }
 
-func (p *Page) Layout(win *spswin.Window, gtx layout.Context, param any) layout.Dimensions {
+func (p *Page) Layout(win spsgio.Window, gtx layout.Context, param any) layout.Dimensions {
+	theme := win.GetTheme()
 	p.List.Axis = layout.Vertical
-	return material.List(win.Theme, &p.List).Layout(gtx, 1, func(gtx layout.Context, _ int) layout.Dimensions {
+	return material.List(theme, &p.List).Layout(gtx, 1, func(gtx layout.Context, _ int) layout.Dimensions {
 		return layout.Flex{
 			Alignment: layout.Middle,
 			Axis:      layout.Vertical,
 		}.Layout(gtx,
 			layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-				return spslayout.DefaultInset.Layout(gtx, material.Body1(win.Theme, `SPS Excel Tools`).Layout)
+				return spslayout.DefaultInset.Layout(gtx, material.Body1(theme, `SPS Excel Tools`).Layout)
 			}),
 		)
 	})

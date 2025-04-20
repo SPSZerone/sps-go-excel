@@ -10,9 +10,9 @@ import (
 	"gioui.org/widget/material"
 	"gioui.org/x/component"
 	"gioui.org/x/explorer"
+	spsgio "github.com/SPSZerone/sps-go-zerone/graphics/gio"
 
 	spsicon "github.com/SPSZerone/sps-go-zerone/graphics/gio/icon"
-	spswin "github.com/SPSZerone/sps-go-zerone/graphics/gio/window"
 
 	spsexcel "github.com/SPSZerone/sps-go-excel/excel"
 )
@@ -34,9 +34,10 @@ type Excel struct {
 	Excel spsexcel.Excel
 }
 
-func (d *Diff) Layout(win *spswin.Window, gtx layout.Context, param any) layout.Dimensions {
+func (d *Diff) Layout(win spsgio.Window, gtx layout.Context, param any) layout.Dimensions {
+	theme := win.GetTheme()
 	d.List.Axis = layout.Vertical
-	return material.List(win.Theme, &d.List).Layout(gtx, 1, func(gtx layout.Context, _ int) layout.Dimensions {
+	return material.List(theme, &d.List).Layout(gtx, 1, func(gtx layout.Context, _ int) layout.Dimensions {
 		return layout.Flex{Axis: layout.Vertical}.Layout(
 			gtx,
 			layout.Rigid(func(gtx layout.Context) layout.Dimensions {
@@ -48,19 +49,19 @@ func (d *Diff) Layout(win *spswin.Window, gtx layout.Context, param any) layout.
 				}.Layout(
 					gtx,
 					layout.Flexed(0.95, func(gtx layout.Context) layout.Dimensions {
-						return d.fileInput.Layout(gtx, win.Theme, "File(xlsx,csv...)")
+						return d.fileInput.Layout(gtx, theme, "File(xlsx,csv...)")
 					}),
 					layout.Rigid(func(gtx layout.Context) layout.Dimensions {
 						if d.fileButton.Clicked(gtx) {
 							go d.OpenFile(win)
 						}
-						return material.IconButton(win.Theme, &d.fileButton, spsicon.ActionOpenInNew, "Open File").Layout(gtx)
+						return material.IconButton(theme, &d.fileButton, spsicon.ActionOpenInNew, "Open File").Layout(gtx)
 					}),
 					layout.Rigid(func(gtx layout.Context) layout.Dimensions {
 						if d.reloadButton.Clicked(gtx) {
-							win.Logger.Info().Msg("Reload")
+							win.GetLogger().Info().Msg("Reload")
 						}
-						return material.IconButton(win.Theme, &d.reloadButton, spsicon.ActionUpdate, "Reload").Layout(gtx)
+						return material.IconButton(theme, &d.reloadButton, spsicon.ActionUpdate, "Reload").Layout(gtx)
 					}),
 				)
 			}),
@@ -71,19 +72,19 @@ func (d *Diff) Layout(win *spswin.Window, gtx layout.Context, param any) layout.
 	})
 }
 
-func (d *Diff) OpenFile(win *spswin.Window) {
+func (d *Diff) OpenFile(win spsgio.Window) {
 	file, err := d.explorer.ChooseFile("xlsx", "csv")
 	if err != nil {
-		win.Logger.Error().Msgf("explorer.ChooseFile err:%v", err)
+		win.GetLogger().Error().Msgf("explorer.ChooseFile err:%v", err)
 		return
 	}
 	defer file.Close()
 
-	win.Logger.Info().Msg("Open File")
+	win.GetLogger().Info().Msg("Open File")
 
 	ex, err := spsexcel.OpenReader(file, spsexcel.OptFlag(spsexcel.OReadWrite))
 	if err != nil {
-		win.Logger.Error().Msgf("excel.OpenReader err:%v", err)
+		win.GetLogger().Error().Msgf("excel.OpenReader err:%v", err)
 		return
 	}
 
@@ -91,7 +92,9 @@ func (d *Diff) OpenFile(win *spswin.Window) {
 	d.excelRefresh.Store(true)
 }
 
-func (d *Diff) LayoutExcel(win *spswin.Window, gtx layout.Context, param any) layout.Dimensions {
+func (d *Diff) LayoutExcel(win spsgio.Window, gtx layout.Context, param any) layout.Dimensions {
+	theme := win.GetTheme()
+
 	if d.excelRefresh.Load() {
 		d.excelRefresh.Store(false)
 
@@ -116,8 +119,8 @@ func (d *Diff) LayoutExcel(win *spswin.Window, gtx layout.Context, param any) la
 			cells, _ := row.Cells()
 			onGetCells(cells, &builder)
 
-			win.Logger.Info().Msg(builder.String())
+			win.GetLogger().Info().Msg(builder.String())
 		}
 	}
-	return material.H6(win.Theme, "TODO...").Layout(gtx)
+	return material.H6(theme, "TODO...").Layout(gtx)
 }

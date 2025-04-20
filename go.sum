@@ -57,6 +57,10 @@ github.com/SPSZerone/sps-go-zerone v0.0.0-20250420053733-c62811d55d77 h1:7cMz1VU
 github.com/SPSZerone/sps-go-zerone v0.0.0-20250420053733-c62811d55d77/go.mod h1:hr8JtB+nl21QY5zawqQf8FPk0AYYU54w+2kI6X4VPoM=
 github.com/SPSZerone/sps-go-zerone v0.0.0-20250420085201-8bbbc156297b h1:5oP0wuu6dxEYgmjxXAiR/2NjVWaH8dnV5ZXxgEgZqkA=
 github.com/SPSZerone/sps-go-zerone v0.0.0-20250420085201-8bbbc156297b/go.mod h1:hr8JtB+nl21QY5zawqQf8FPk0AYYU54w+2kI6X4VPoM=
+github.com/SPSZerone/sps-go-zerone v0.0.0-20250420144448-01c744dc5c6e h1:IqSevvpujBkfI2O6v9WvgC57GptZ1OqKo+zBQEKKjeo=
+github.com/SPSZerone/sps-go-zerone v0.0.0-20250420144448-01c744dc5c6e/go.mod h1:hr8JtB+nl21QY5zawqQf8FPk0AYYU54w+2kI6X4VPoM=
+github.com/SPSZerone/sps-go-zerone v0.0.0-20250420145925-dc60674252a6 h1:vQ+oCrvjy1rPiGJDJdho6ICpzBhlwRPC2EaZN+bbx+k=
+github.com/SPSZerone/sps-go-zerone v0.0.0-20250420145925-dc60674252a6/go.mod h1:hr8JtB+nl21QY5zawqQf8FPk0AYYU54w+2kI6X4VPoM=
 github.com/coreos/go-systemd/v22 v22.5.0/go.mod h1:Y58oyj3AT4RCenI/lSvhwexgC+NSVTIJ3seZv2GcEnc=
 github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c=
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
