@@ -25,14 +25,14 @@ const (
 func Run() {
 	spsapp.Run(
 		NewWindow,
-		spsapp.OptOnCreate(func(app *spsapp.App) {
-			app.Logger.Info().Msgf("Window %s Create", Name)
+		spsapp.OptOnCreate(func(app spsgio.App) {
+			app.GetLogger().Info().Msgf("Window %s Create", Name)
 		}),
-		spsapp.OptOnStart(func(app *spsapp.App) {
-			app.Logger.Info().Msgf("Window %s Start", Name)
+		spsapp.OptOnStart(func(app spsgio.App) {
+			app.GetLogger().Info().Msgf("Window %s Start", Name)
 		}),
-		spsapp.OptOnStop(func(app *spsapp.App) {
-			app.Logger.Info().Msgf("Window %s Stop", Name)
+		spsapp.OptOnStop(func(app spsgio.App) {
+			app.GetLogger().Info().Msgf("Window %s Stop", Name)
 		}),
 	)
 }
@@ -49,13 +49,13 @@ func NewWindow(app spsgio.App, fromWin spsgio.Window) spsgio.Window {
 		spswin.OptPref(*pref),
 		spswin.OptStartAction(system.ActionMaximize),
 		spswin.OptLoopMode(spswin.LoopModeSimple),
-		spswin.OptOnInitPre(func(win *spswin.Window) {
-			win.Logger.Info().Msgf("%s InitPre", win.LogPrefix())
+		spswin.OptOnInitPre(func(win spsgio.Window) {
+			win.GetLogger().Info().Msgf("%s InitPre", win.LogPrefix())
 		}),
-		spswin.OptOnInitPost(func(win *spswin.Window) {
-			win.Logger.Info().Msgf("%s InitPost", win.LogPrefix())
+		spswin.OptOnInitPost(func(win spsgio.Window) {
+			win.GetLogger().Info().Msgf("%s InitPost", win.LogPrefix())
 
-			pages := &win.Pages
+			pages := win.GetPages()
 			pageTag := 0
 			pages.Register(pageTag, diff.New(pages))
 
@@ -67,12 +67,12 @@ func NewWindow(app spsgio.App, fromWin spsgio.Window) spsgio.Window {
 			prefPage.Tabs.SetSelected(spspref.TabIdxSettings)
 			pages.Register(pageTag, prefPage)
 		}),
-		spswin.OptOnStart(func(win *spswin.Window) {
-			win.Logger.Info().Msgf("%s Start", win.LogPrefix())
-			win.Pages.Start(0)
+		spswin.OptOnStart(func(win spsgio.Window) {
+			win.GetLogger().Info().Msgf("%s Start", win.LogPrefix())
+			win.GetPages().Start(0)
 		}),
-		spswin.OptOnStop(func(win *spswin.Window) {
-			win.Logger.Info().Msgf("%s Stop", win.LogPrefix())
+		spswin.OptOnStop(func(win spsgio.Window) {
+			win.GetLogger().Info().Msgf("%s Stop", win.LogPrefix())
 		}),
 	)
 }

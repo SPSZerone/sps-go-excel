@@ -7,19 +7,18 @@ import (
 	"gioui.org/widget/material"
 	"gioui.org/x/component"
 	"gioui.org/x/explorer"
-	spsgio "github.com/SPSZerone/sps-go-zerone/graphics/gio"
 
+	spsgio "github.com/SPSZerone/sps-go-zerone/graphics/gio"
 	spsicon "github.com/SPSZerone/sps-go-zerone/graphics/gio/icon"
 	spslayout "github.com/SPSZerone/sps-go-zerone/graphics/gio/layout"
-	spswin "github.com/SPSZerone/sps-go-zerone/graphics/gio/window"
 )
 
-func New(pages *spswin.Pages) *Page {
+func New(pages spsgio.Pages) *Page {
 	t := &Page{
 		Pages: pages,
 	}
-	t.left.explorer = explorer.NewExplorer(pages.Window.Window)
-	t.right.explorer = explorer.NewExplorer(pages.Window.Window)
+	t.left.explorer = explorer.NewExplorer(pages.GetWindow().GetWindow())
+	t.right.explorer = explorer.NewExplorer(pages.GetWindow().GetWindow())
 	return t
 }
 
@@ -27,7 +26,7 @@ var _ spsgio.Page = (*Page)(nil)
 
 type Page struct {
 	widget.List
-	*spswin.Pages
+	spsgio.Pages
 
 	split spslayout.Split
 	left  Diff
