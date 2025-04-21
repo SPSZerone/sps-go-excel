@@ -43,7 +43,7 @@ func NewWindow(app spsgio.App, fromWin spsgio.Window) spsgio.Window {
 		pref = fromWin.GetPref()
 	}
 	return spswin.NewWindow(
-		app.GetContext(),
+		app,
 		spswin.OptID("Main"),
 		spswin.OptTitle(Name),
 		spswin.OptPref(*pref),
