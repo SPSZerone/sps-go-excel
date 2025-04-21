@@ -10,8 +10,8 @@ import (
 	"gioui.org/widget/material"
 	"gioui.org/x/component"
 	"gioui.org/x/explorer"
-	spsgio "github.com/SPSZerone/sps-go-zerone/graphics/gio"
 
+	spsgio "github.com/SPSZerone/sps-go-zerone/graphics/gio"
 	spsicon "github.com/SPSZerone/sps-go-zerone/graphics/gio/icon"
 
 	spsexcel "github.com/SPSZerone/sps-go-excel/excel"
