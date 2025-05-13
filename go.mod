@@ -5,7 +5,7 @@ go 1.23.0
 require (
 	gioui.org v0.7.1
 	gioui.org/x v0.7.1
-	github.com/SPSZerone/sps-go-zerone v0.0.0-20250423011604-40e480b286c7
+	github.com/SPSZerone/sps-go-zerone v0.0.0-20250510104140-0339b97251ab
 	github.com/stretchr/testify v1.9.0
 	github.com/xuri/excelize/v2 v2.8.1
 )
