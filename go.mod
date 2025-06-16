@@ -3,18 +3,19 @@ module github.com/SPSZerone/sps-go-excel
 go 1.23.0
 
 require (
-	gioui.org v0.7.1
-	gioui.org/x v0.7.1
-	github.com/SPSZerone/sps-go-zerone v0.0.0-20250516001847-055c86463c61
+	gioui.org v0.8.0
+	gioui.org/x v0.8.1
+	github.com/SPSZerone/sps-go-zerone v0.0.0-20250616133813-b4e7498d68bd
 	github.com/stretchr/testify v1.9.0
 	github.com/xuri/excelize/v2 v2.8.1
 )
 
 require (
-	gioui.org/cpu v0.0.0-20210817075930-8d6a761490d2 // indirect
 	gioui.org/shader v1.0.8 // indirect
+	git.wow.st/gmp/jni v0.0.0-20210610011705-34026c7e22d0 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
-	github.com/go-text/typesetting v0.1.1 // indirect
+	github.com/go-text/typesetting v0.2.1 // indirect
+	github.com/godbus/dbus/v5 v5.0.6 // indirect
 	github.com/mattn/go-colorable v0.1.13 // indirect
 	github.com/mattn/go-isatty v0.0.19 // indirect
 	github.com/mohae/deepcopy v0.0.0-20170929034955-c48cc78d4826 // indirect
